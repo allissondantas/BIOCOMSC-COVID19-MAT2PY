@@ -64,6 +64,7 @@ def main():
         deaths = deaths.to_numpy()
         generate_data(A, data, deaths, Region[ID], Population[ID], brasil)
         bar.next()
+        #break
     bar.finish()
     end_time = time.time()
     print(end_time - start_time)
