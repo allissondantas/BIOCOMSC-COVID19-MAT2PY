@@ -58,13 +58,14 @@ def main():
     bar = IncrementalBar('Processing', max=len(Region))
     start_time = time.time()
     for ID in range(len(Region)):
+        ID = 6 # Pernambuco
         data = DATA[Region[ID]]
         data = data.to_numpy()
         deaths = DEATHS[Region[ID]]
         deaths = deaths.to_numpy()
         generate_data(A, data, deaths, Region[ID], Population[ID], brasil)
         bar.next()
-        #break
+        break
     bar.finish()
     end_time = time.time()
     print(end_time - start_time)

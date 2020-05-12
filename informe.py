@@ -241,7 +241,7 @@ def generate_data(dateData, data, deaths, name, pop, brasil):
                 actual_label = 'Atual'
                 cumulative_observed_deaths_label = 'Óbitos observados acumulados'
                 cumulative_observed_deaths_per_label = 'Óbitos acumulados por $\mathregular{10^5}$ hab.'
-                case_fatality_rate_label = 'Taxa de mortalidade de casos (%)'
+                case_fatality_rate_label = 'Taxa de letalidade (%)'
                 
             else: 
                 cases_label = 'Number of cases'
