@@ -1,0 +1,31 @@
+import pandas as pd
+from pandas import ExcelWriter
+from crear_excel_brasil import dataFramePorColuna
+from datetime import datetime
+import requests
+
+path_recife = 'https://raw.githubusercontent.com/JTeodomiro/covid19PE/master/PE_Cidades_DATA.csv'
+save_filename = 'data/cases-recife.xlsx'
+
+
+def run_crear_excel_recife():
+    link = requests.get(path_recife)
+    data = pd.read_csv(link.url)
+    data = data.rename(columns={'Data': 'date'})
+    
+    for i in data['date']:
+        aux = i[3:] + i[0:2] + '2020'
+        data['date'] = datetime.strptime(aux, '%b%d%Y')
+
+    data['date'] = pd.to_datetime(data['date']).dt.strftime("%Y-%m-%d")
+
+    with ExcelWriter(save_filename) as writer:
+
+        data.to_excel(writer, sheet_name='Cases', index=False)
+
+
+if __name__ == '__main__':
+    run_crear_excel_recife()
+
+
+
