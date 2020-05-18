@@ -116,25 +116,56 @@ def main():
                 save_path = 'reports_pdf/brasil/risk/' + last_day + '-' + region[ID] + '.pdf'
             elif brasil and pt:
                 save_path = 'reports_pdf/brasil/risk-pt/' + last_day + '-' + region[ID] + '.pdf'
+                save_path_html = 'reports_pdf/brasil/risk-pt/html/' + last_day + '-' + region[ID]+ '.html'
             else:
                 save_path = 'reports_pdf/risk/' + last_day + '-' + region[ID] + '.pdf'
 
-            '''
+            for i in a_14_days:
+                    if i < 30:
+                        c_min = 0.6
+                        c_max = 0.89
+                        green = [0, 'rgb(0, 255, 0)']
+                        yellow = [0.9,'rgb(255, 255, 0)']
+                        red = [1, 'rgb(255, 0, 0)']
+                        red_ = [1, 'rgb(255, 0, 0)']
+
+                    elif 30 > i < 100:
+                        c_min = 0.65
+                        c_max = 0.95
+                        green = [0, 'rgb(0, 255, 0)']
+                        yellow = [0.5,'rgb(255, 255, 0)']
+                        red = [1, 'rgb(255, 0, 0)']
+                        red_ = [1, 'rgb(255, 0, 0)']
+                    elif 100 > i < 200:
+                        c_min = 0.65
+                        c_max = 1.1
+                        green = [0, 'rgb(0, 255, 0)']
+                        yellow = [0.3,'rgb(255, 255, 0)']
+                        red = [1, 'rgb(255, 0, 0)']
+                        red_ = [1, 'rgb(255, 0, 0)']
+                    else:
+                        c_min = 0.65
+                        c_max = 1.3
+                        green = [0, 'rgb(0, 255, 0)']
+                        yellow = [0.2,'rgb(255, 255, 0)']
+                        red = [0.5, 'rgb(255, 0, 0)']
+                        red_ = [1, 'rgb(255, 0, 0)']
 
             fig = go.Figure()
-            fig.add_contour(
-            z=[[10, 10.625, 12.5, 15.625, 20],
-           [5.625, 6.25, 8.125, 11.25, 15.625],
-           [2.5, 3.125, 5., 8.125, 12.5],
-           [0.625, 1.25, 3.125, 6.25, 10.625],
-           [0, 0.625, 2.5, 5.625, 8]])
-            #fig.show()
             fig.add_trace(go.Scatter(x=a_14_days,
                                      y=p_seven,
                                      text=dia,
                                      mode='lines+markers',
                                      marker=dict(
-                                         color='White',
+                                         color= a_14_days,#'White',
+                                         colorscale = [
+                                             green,
+                                             yellow,
+                                             red,
+                                             red_,
+                                             ],
+                                         
+                                         showscale = True,
                                          size=10,
                                          line=dict(
                                              color='Black',
@@ -155,18 +186,23 @@ def main():
                               dash="dot",
                           ))
             bra_title = region[ID] + ' - Brasil'
-            fig.update_layout(#plot_bgcolor='rgb(255,255,255)',
+            fig.update_layout(plot_bgcolor='rgb(255,255,255)',
                               title=bra_title,
+                              width = 800,
+                              height = 600,
                               xaxis_title='Taxa de ataque por 10^5 hab. (últimos 14 dias)',
                               yaxis_title='\u03C1 (média dos últimos 7 dias)',
+                     
                               )
             fig.update_xaxes(showline=True, linewidth=2, linecolor='black', ticks="outside", tickwidth=2,
-                             tickcolor='black', ticklen=0, mirror=True)
+                            tickcolor='black', ticklen=0, mirror=True, automargin=True)
             fig.update_yaxes(showline=True, linewidth=2, linecolor='black', ticks="outside", tickwidth=2,
-                             tickcolor='black', ticklen=0, mirror=True)
+                            tickcolor='black', ticklen=0, mirror=True, automargin=True)
 
-            fig.show()
-            '''
+            #fig.show()
+            fig.write_html(save_path_html)
+            #break
+            
             with PdfPages(save_path) as pdf:
                 fig1, ax1 = plt.subplots()
                 ax1.plot(a_14_days, p_seven, 'ko--', fillstyle='none', linewidth=0.5)
@@ -201,20 +237,7 @@ def main():
                     plt.title(region[ID])
                 color_map = plt.cm.hsv
                 cmap = color_map.reversed()
-                for i in a_14_days:
-                    if i < 30:
-                        c_min = 0.6
-                        c_max = 0.89
-                    elif 30 > i < 100:
-                        c_min = 0.65
-                        c_max = 0.95
-                    elif 100 > i < 200:
-                        c_min = 0.65
-                        c_max = 1.1
-                    else:
-                        c_min = 0.65
-                        c_max = 1.3
-
+               
                 gradient_image(ax1, direction=0.6, extent=(0, 1, 0, 1), transform=ax1.transAxes,
                                cmap=cmap, cmap_range=(c_min, c_max))
                 ax1.set_aspect('auto')
@@ -232,7 +255,7 @@ def main():
                             ID] + " performed successfully!\nPath:" + save_path)
                 except:
                     print("An exception occurred")
-                # break
+                #break
                  
 
 
@@ -256,6 +279,6 @@ def main():
 '''
 
 if __name__ == "__main__":
-    #sys.argv.append('brasil')
-    sys.argv.append('recife')
+    sys.argv.append('brasil')
+    #sys.argv.append('recife')
     main()
