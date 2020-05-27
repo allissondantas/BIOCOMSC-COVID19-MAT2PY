@@ -10,11 +10,13 @@ Project authors: Martí Català, MD; Pere-Joan Cardona, PhD; Clara Prats, PhD; S
 Run in command line:
 ```sh
 $python3 crear_informe.py  youdata.xlsx 
+$python3 risk_diagrams.py youdata.xlsx  
 ```
 
 To Brazil use:
 ```sh
 $python3 crear_informe.py  brasil 
+$python3 risk_diagrams.py brasil 
 ```
 The data is retrieved automatically from: https://raw.githubusercontent.com/wcota/covid19br/master/cases-brazil-states.csv
 
