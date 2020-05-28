@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from crear_excel_brasil import run_crear_excel_brasil
-from crear_exel_recife import run_crear_excel_recife
+from crear_excel_recife import run_crear_excel_recife
 from pandas import ExcelWriter
 
 import plotly.graph_objects as go

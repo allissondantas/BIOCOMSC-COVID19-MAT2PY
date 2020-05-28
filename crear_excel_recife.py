@@ -12,12 +12,13 @@ def run_crear_excel_recife():
     link = requests.get(path_recife)
     data = pd.read_csv(link.url)
     data = data.rename(columns={'Data': 'date'})
-    
-    for i in data['date']:
-        aux = i[3:] + i[0:2] + '2020'
-        data['date'] = datetime.strptime(aux, '%b%d%Y')
+    print(data)
+    for i, j in enumerate(data['date'], start=0):
+        aux = j[3:] + j[0:2] + '2020'
+        data['date'][i] = datetime.strptime(aux, '%b%d%Y')
 
     data['date'] = pd.to_datetime(data['date']).dt.strftime("%Y-%m-%d")
+    print(data)
 
     with ExcelWriter(save_filename) as writer:
 
