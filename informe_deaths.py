@@ -223,8 +223,8 @@ def generate_data(dateData, data, deaths, name, pop, brasil):
             cumulative_confirmed_label  = 'Óbitos confirmados acumulados'
             time_day_label = 'Tempo (dia)'
             cumulative_cases_per_label = 'Óbitos acumulados por $\mathregular{10^5}$'
-            table_title_label = ['Dia', 'Predição', 'Intervalo']
-            prediction_label = 'Predição'
+            table_title_label = ['Dia', 'Projeção', 'Intervalo']
+            prediction_label = 'Projeção'
             confirmed_cases_label = 'Óbitos confirmados'
             estimated_cases_label = 'Óbitos estimados'
             a_day_label = '$a (dia^-1)$'
@@ -235,6 +235,9 @@ def generate_data(dateData, data, deaths, name, pop, brasil):
             cumulative_observed_deaths_label = 'Óbitos observados acumulados'
             cumulative_observed_deaths_per_label = 'Óbitos acumulados por $\mathregular{10^5}$ hab.'
             case_fatality_rate_label = 'Taxa de letalidade (%)'
+
+            last_day = dateNumComplete[len(dateNumComplete) - 1]
+            text = "IRRD/PE. \n Fonte: SES-PE. Dados atualizados em "+ str(last_day) +"."
       
             
             fig1, ax1 = plt.subplots()
@@ -288,6 +291,14 @@ def generate_data(dateData, data, deaths, name, pop, brasil):
                             colWidths=[0.2, 0.2, 0.3],
                             colLabels= table_title_label)
             fig1.tight_layout()
+
+            if name == "PE":
+                    plt.subplots_adjust(bottom=0.2)
+                    text_annotate = (
+                        "IRRD/PE. \nFonte: SES-PE. Dados atualizados em "+ str(last_day) +".")
+                    
+                    plt.text(0, -0.25, text_annotate, fontsize=7, wrap=True)
+            ax1.set_aspect('auto')
 
             savePathImg = 'reports_pdf/brasil/informe-deaths-pt/'+dateNumComplete[len(dateNumComplete) - 1]+'-'+name+'_fig1.png'
             plt.savefig(savePathImg, bbox_inches='tight', dpi=300) 

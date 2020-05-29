@@ -198,13 +198,14 @@ def main():
                             tickcolor='black', ticklen=0, mirror=True, automargin=True)
             fig.update_yaxes(showline=True, linewidth=2, linecolor='black', ticks="outside", tickwidth=2,
                             tickcolor='black', ticklen=0, mirror=True, automargin=True)
-
+            
+          
             #fig.show()
             fig.write_html(save_path_html)
             #break
-            
+
             with PdfPages(save_path) as pdf:
-                fig1, ax1 = plt.subplots()
+                fig1, ax1 = plt.subplots(sharex=True)
                 ax1.plot(a_14_days, p_seven, 'ko--', fillstyle='none', linewidth=0.5)
                 lim = ax1.get_xlim()
                 x = np.ones(int(lim[1]))
@@ -229,7 +230,9 @@ def main():
                              arrowprops=dict(arrowstyle="->",
                                              connectionstyle="arc3", linewidth=0.4),
                              )
-
+                 
+                
+                
                 if brasil:
                     bra_title = region[ID] + ' - Brasil'
                     plt.title(bra_title)
@@ -240,9 +243,21 @@ def main():
                
                 gradient_image(ax1, direction=0.6, extent=(0, 1, 0, 1), transform=ax1.transAxes,
                                cmap=cmap, cmap_range=(c_min, c_max))
+               
+                
+                
+                if region[ID] == "PE" or sys.argv[1] == 'recife':
+                    plt.subplots_adjust(bottom=0.2)
+                    text_annotate = (
+                        "*A zona vermelha representa alto risco de infecção, enquanto a zona verde representa baixo risco.\n Valores calculados baseados na incidência diária e população. "
+                        "IRRD/PE. \n Fonte: SES-PE. Dados atualizados em "+ str(last_day) +".")
+                    
+                    plt.text(0, -1, text_annotate, fontsize=7, wrap=True)
                 ax1.set_aspect('auto')
-                fig1.tight_layout()
-                # plt.show()
+                
+
+                #plt.show()
+                #break
 
                 if brasil and pt:
                     save_path_img = 'reports_pdf/brasil/risk-pt/' + last_day + '-' + region[ID] + '.png'
@@ -255,9 +270,8 @@ def main():
                             ID] + " performed successfully!\nPath:" + save_path)
                 except:
                     print("An exception occurred")
-                #break
+                
                  
-
 
 '''
             df = pd.DataFrame({
