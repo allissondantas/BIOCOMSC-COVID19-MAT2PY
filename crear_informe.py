@@ -1,6 +1,6 @@
 from informe import generate_data
 from crear_excel_brasil import run_crear_excel_brasil
-from crear_exel_recife import run_crear_excel_recife
+from crear_excel_recife import run_crear_excel_recife
 from progress.bar import IncrementalBar
 from datetime import datetime
 import pandas as pd
