@@ -189,7 +189,7 @@ def generate_data(dateData, data, deaths, name, pop, brasil):
                 x1 = x1[(len(x1) - 15): len(x1)]
                 y1 = y1[(len(y1) - 15): len(y1)]
             
-            popt1, pcov1 = curve_fit(model_ml, x1, y1, x0, method='lm', maxfev = 10000)
+            popt1, pcov1 = curve_fit(model_ml, x1, y1, x0, method='lm', maxfev = 100000)
             Kvect[k, 0] = popt1[0]
             avect[k, 0] = popt1[1]
             cf = simple_confint(y1, popt1, pcov1)
