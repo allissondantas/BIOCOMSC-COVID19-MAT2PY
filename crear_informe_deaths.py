@@ -76,7 +76,7 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.argv.append('brasil')
+    #sys.argv.append('brasil')
     #sys.argv.append('recife')
     # sys.argv.append('covid19/data/Data_Spain_v2.xlsx')
     main()

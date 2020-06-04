@@ -21,6 +21,7 @@ $python3 risk_diagrams.py brasil
 The data is retrieved automatically from: https://raw.githubusercontent.com/wcota/covid19br/master/cases-brazil-states.csv
 
 
+
 License
 ---- 
 

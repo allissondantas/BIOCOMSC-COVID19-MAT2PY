@@ -509,6 +509,7 @@ def generate_data(dateData, data, deaths, name, pop, brasil):
             except:
                 print("An exception occurred")
         
+        
             #plt.show()
                 
         

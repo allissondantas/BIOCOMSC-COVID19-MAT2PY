@@ -294,5 +294,5 @@ def main():
 
 if __name__ == "__main__":
     #sys.argv.append('brasil')
-    sys.argv.append('recife')
+    #sys.argv.append('recife')
     main()

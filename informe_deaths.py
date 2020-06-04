@@ -194,6 +194,7 @@ def generate_data(dateData, data, deaths, name, pop, brasil):
             avect[k, 0] = popt1[1]
             cf = simple_confint(y1, popt1, pcov1)
             cf = np.transpose(cf)
+            
             #print('confidence interval\n', cf)
             
             cf[0,0] = max(cf[0,0], y1[len(y1) - 1])
