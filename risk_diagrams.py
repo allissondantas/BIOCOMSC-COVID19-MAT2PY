@@ -46,6 +46,7 @@ def gradient_image(ax, extent, direction=0.3, cmap_range=(0, 1), **kwargs):
 def main():
     try:
         filename = sys.argv[1]
+        deaths = sys.argv[2]
     except:
         print('Error! Usage: python3 risk_diagrams.py brasil')
         sys.exit()
@@ -53,11 +54,22 @@ def main():
     if filename == 'brasil' or filename == 'recife':
         brasil = True
         pt = True
-        if filename == 'brasil':
+        
+
+        if filename == 'brasil' and deaths == 'False':
             try:
                 run_crear_excel_brasil()
                 filename = 'data/Data_Brasil.xlsx'
                 filename_population = 'data/pop_Brasil_v2.xlsx'
+                sheet_name = 'Cases'
+            except AttributeError:
+                print('Error! Not found file or could not download!')
+        elif filename == 'brasil' and deaths == 'True':
+            try:
+                run_crear_excel_brasil()
+                filename = 'data/Data_Brasil.xlsx'
+                filename_population = 'data/pop_Brasil_v2.xlsx'
+                sheet_name = 'Deaths'
 
             except AttributeError:
                 print('Error! Not found file or could not download!')
@@ -66,15 +78,21 @@ def main():
                 run_crear_excel_recife()
                 filename = 'data/cases-recife.xlsx'
                 filename_population = 'data/pop_recife.xlsx'
+                sheet_name = 'Cases'
 
             except AttributeError:
                 print('Error! Not found file or could not download!')
 
-        data = pd.read_excel(filename, sheet_name='Cases')
+        data = pd.read_excel(filename, sheet_name= sheet_name)
         population = pd.read_excel(filename_population)
         dia = pd.to_datetime(data['date']).dt.strftime('%d/%m/%Y')
         dia = dia.to_numpy()
         region = population.columns
+
+        if sheet_name == 'Cases':
+            cases_deaths = 'casos'
+        else:
+            cases_deaths = 'óbitos'
 
         for ID in range(len(region)):
 
@@ -115,8 +133,8 @@ def main():
             if brasil and not pt:
                 save_path = 'reports_pdf/brasil/risk/' + last_day + '-' + region[ID] + '.pdf'
             elif brasil and pt:
-                save_path = 'reports_pdf/brasil/risk-pt/' + last_day + '-' + region[ID] + '.pdf'
-                save_path_html = 'reports_pdf/brasil/risk-pt/html/' + last_day + '-' + region[ID]+ '.html'
+                save_path = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID] + '.pdf'
+                save_path_html = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/html/' + last_day + '-' + region[ID]+ '.html'
             else:
                 save_path = 'reports_pdf/risk/' + last_day + '-' + region[ID] + '.pdf'
 
@@ -191,7 +209,7 @@ def main():
                               width = 800,
                               height = 600,
                               xaxis_title='Taxa de ataque por 10^5 hab. (últimos 14 dias)',
-                              yaxis_title='\u03C1 (média dos últimos 7 dias)',
+                              yaxis_title='\u03C1 (média de '+ cases_deaths +' dos últimos 7 dias)',
                      
                               )
             fig.update_xaxes(showline=True, linewidth=2, linecolor='black', ticks="outside", tickwidth=2,
@@ -213,7 +231,7 @@ def main():
                 ax1.set_ylim(0, 4)
                 # ax1.set_xlim(0, len(x))
                 if brasil and pt:
-                    ax1.set_ylabel('$\u03C1$ (média dos últimos 7 dias)')
+                    ax1.set_ylabel('\u03C1 (média de '+ cases_deaths +' dos últimos 7 dias)')
                     ax1.set_xlabel('Taxa de ataque por $10^5$ hab. (últimos 14 dias)')
                 else:
                     ax1.set_ylabel('$\u03C1$ (mean of the last 7 days)')
@@ -247,9 +265,10 @@ def main():
                 
                 
                 if region[ID] == "PE" or sys.argv[1] == 'recife':
+                   
                     plt.subplots_adjust(bottom=0.2)
                     text_annotate = (
-                        "*A zona vermelha representa alto risco de infecção, enquanto a zona verde representa baixo risco.\n Valores calculados baseados na incidência diária e população. "
+                        "*A zona vermelha representa alto risco de infecção, enquanto a zona verde representa baixo risco.\n Valores calculados baseados na incidência diária de "+ cases_deaths +" e população. "
                         "IRRD/PE. \n Fonte: SES-PE. Dados atualizados em "+ str(last_day) +".")
                     
                     plt.text(0, -1, text_annotate, fontsize=7, wrap=True)
@@ -260,7 +279,7 @@ def main():
                 #break
 
                 if brasil and pt:
-                    save_path_img = 'reports_pdf/brasil/risk-pt/' + last_day + '-' + region[ID] + '.png'
+                    save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID] + '.png'
                     plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
                 try:
                     pdf.savefig(fig1)
@@ -294,5 +313,6 @@ def main():
 
 if __name__ == "__main__":
     #sys.argv.append('brasil')
-    #sys.argv.append('recife')
+    sys.argv.append('recife')
+    sys.argv.append('False') # True -> Deaths False -> Cases
     main()
