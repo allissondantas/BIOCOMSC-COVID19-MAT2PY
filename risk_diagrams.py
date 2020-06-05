@@ -91,10 +91,13 @@ def main():
 
         if sheet_name == 'Cases':
             cases_deaths = 'casos'
+            ataque_densidade = 'Taxa de ataque'
         else:
             cases_deaths = 'óbitos'
+            ataque_densidade = 'Densidade de óbitos'
 
         for ID in range(len(region)):
+            #ID = 6 # Pernambuco
 
             cumulative_cases = data[region[ID]]  # region for ALL
             cumulative_cases = cumulative_cases.to_numpy()
@@ -139,35 +142,51 @@ def main():
                 save_path = 'reports_pdf/risk/' + last_day + '-' + region[ID] + '.pdf'
 
             for i in a_14_days:
-                    if i < 30:
-                        c_min = 0.6
-                        c_max = 0.89
-                        green = [0, 'rgb(0, 255, 0)']
-                        yellow = [0.9,'rgb(255, 255, 0)']
-                        red = [1, 'rgb(255, 0, 0)']
-                        red_ = [1, 'rgb(255, 0, 0)']
+                    if sheet_name == 'Cases':
+                        if i < 30:
+                            c_min = 0.6
+                            c_max = 0.89
+                            green = [0, 'rgb(0, 255, 0)']
+                            yellow = [0.9,'rgb(255, 255, 0)']
+                            red = [1, 'rgb(255, 0, 0)']
+                            red_ = [1, 'rgb(255, 0, 0)']
 
-                    elif 30 > i < 100:
-                        c_min = 0.65
-                        c_max = 0.95
-                        green = [0, 'rgb(0, 255, 0)']
-                        yellow = [0.5,'rgb(255, 255, 0)']
-                        red = [1, 'rgb(255, 0, 0)']
-                        red_ = [1, 'rgb(255, 0, 0)']
-                    elif 100 > i < 200:
-                        c_min = 0.65
-                        c_max = 1.1
-                        green = [0, 'rgb(0, 255, 0)']
-                        yellow = [0.3,'rgb(255, 255, 0)']
-                        red = [1, 'rgb(255, 0, 0)']
-                        red_ = [1, 'rgb(255, 0, 0)']
-                    else:
-                        c_min = 0.65
-                        c_max = 1.3
-                        green = [0, 'rgb(0, 255, 0)']
-                        yellow = [0.2,'rgb(255, 255, 0)']
-                        red = [0.5, 'rgb(255, 0, 0)']
-                        red_ = [1, 'rgb(255, 0, 0)']
+                        elif 30 > i < 100:
+                            c_min = 0.65
+                            c_max = 0.95
+                            green = [0, 'rgb(0, 255, 0)']
+                            yellow = [0.5,'rgb(255, 255, 0)']
+                            red = [1, 'rgb(255, 0, 0)']
+                            red_ = [1, 'rgb(255, 0, 0)']
+                        elif 100 > i < 200:
+                            c_min = 0.65
+                            c_max = 1.1
+                            green = [0, 'rgb(0, 255, 0)']
+                            yellow = [0.3,'rgb(255, 255, 0)']
+                            red = [1, 'rgb(255, 0, 0)']
+                            red_ = [1, 'rgb(255, 0, 0)']
+                        else:
+                            c_min = 0.65
+                            c_max = 1.3
+                            green = [0, 'rgb(0, 255, 0)']
+                            yellow = [0.2,'rgb(255, 255, 0)']
+                            red = [0.5, 'rgb(255, 0, 0)']
+                            red_ = [1, 'rgb(255, 0, 0)']
+                    elif sheet_name == 'Deaths': 
+                        if i < 10:
+                            c_min = 0.6
+                            c_max = 0.89
+                            green = [0, 'rgb(0, 255, 0)']
+                            yellow = [0.9,'rgb(255, 255, 0)']
+                            red = [1, 'rgb(255, 0, 0)']
+                            red_ = [1, 'rgb(255, 0, 0)']
+                        elif i > 10:
+                            c_min = 0.65
+                            c_max = 1.3
+                            green = [0, 'rgb(0, 255, 0)']
+                            yellow = [0.2,'rgb(255, 255, 0)']
+                            red = [0.5, 'rgb(255, 0, 0)']
+                            red_ = [1, 'rgb(255, 0, 0)']
 
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=a_14_days,
@@ -208,7 +227,7 @@ def main():
                               title=bra_title,
                               width = 800,
                               height = 600,
-                              xaxis_title='Taxa de ataque por 10^5 hab. (últimos 14 dias)',
+                              xaxis_title= ataque_densidade +' por 10^5 hab. (últimos 14 dias)',
                               yaxis_title='\u03C1 (média de '+ cases_deaths +' dos últimos 7 dias)',
                      
                               )
@@ -232,7 +251,7 @@ def main():
                 # ax1.set_xlim(0, len(x))
                 if brasil and pt:
                     ax1.set_ylabel('\u03C1 (média de '+ cases_deaths +' dos últimos 7 dias)')
-                    ax1.set_xlabel('Taxa de ataque por $10^5$ hab. (últimos 14 dias)')
+                    ax1.set_xlabel(ataque_densidade +' por $10^5$ hab. (últimos 14 dias)')
                 else:
                     ax1.set_ylabel('$\u03C1$ (mean of the last 7 days)')
                     ax1.set_xlabel('Attack rate per $10^5$ inh. (last 14 days)')
@@ -290,7 +309,7 @@ def main():
                 except:
                     print("An exception occurred")
                 
-                 
+                #break # Pernambuco 
 
 '''
             df = pd.DataFrame({
@@ -310,9 +329,10 @@ def main():
                 df.to_excel(writer, sheet_name='Alt_Urgell')
             break
 '''
+            
 
 if __name__ == "__main__":
-    #sys.argv.append('brasil')
-    sys.argv.append('recife')
+    sys.argv.append('brasil')
+    #sys.argv.append('recife')
     sys.argv.append('False') # True -> Deaths False -> Cases
     main()
