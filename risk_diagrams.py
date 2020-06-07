@@ -300,6 +300,9 @@ def main():
                 if brasil and pt:
                     save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID] + '.png'
                     plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
+
+                    save_path_img_site = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+ region[ID] + '.png'
+                    plt.savefig(save_path_img_site, bbox_inches='tight', dpi=300)
                 try:
                     pdf.savefig(fig1)
                     plt.close('all')
