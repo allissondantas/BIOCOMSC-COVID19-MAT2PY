@@ -244,7 +244,12 @@ def main():
                     save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID] + '.png'
                     plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
 
-                    save_path_img_site = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+ region[ID] + '.png'
+                    siglasEstados = ["AC", "AL", "AP", "AM", "BA", "CE",
+                    "DF", "ES", "GO", "MA", "MT", "MS",
+                    "MG", "PA", "PB", "PR", "PE", "PI", "RJ",
+                    "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO", "TOTAL"]
+
+                    save_path_img_site = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+ siglasEstados[ID] + '.png'
                     plt.savefig(save_path_img_site, bbox_inches='tight', dpi=300)
                 try:
                     pdf.savefig(fig1)
