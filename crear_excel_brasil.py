@@ -11,6 +11,18 @@ import sys
 
 pathToBrasil = "https://raw.githubusercontent.com/wcota/covid19br/master/cases-brazil-states.csv"
 
+siglasEstados = ["AC", "AL", "AP", "AM", "BA", "CE",
+                    "DF", "ES", "GO", "MA", "MT", "MS",
+                    "MG", "PA", "PB", "PR", "PE", "PI", "RJ",
+                    "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]
+
+
+nameEstados = ["Acre", "Alagoas", "Amapá", "Amazonas", "Bahia", "Ceará",
+                    "Distrito Federal", "Espirito Santo", "Goias", "Maranhão", "Mato Grosso", "Mato Grosso do Sul",
+                    "Minas Gerais", "Pará", "Paraíba", "Paraná", "Pernambuco", "Piauí", "Rio de Janeiro",
+                    "Rio Grande do Norte", "Rio Grande do Sul", "Rondônia", "Roraima", "Santa Catarina", "São Paulo", "Sergipe", "Tocantins", "TOTAL"]
+
+
 
 def run_crear_excel_brasil():
     try:
@@ -22,15 +34,16 @@ def run_crear_excel_brasil():
         sys.exit()
 
     dados_semTotal.set_index('date', 'state', inplace=True)
-    siglasEstados = ["AC", "AL", "AP", "AM", "BA", "CE",
-                     "DF", "ES", "GO", "MA", "MT", "MS",
-                     "MG", "PA", "PB", "PR", "PE", "PI", "RJ",
-                     "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]
+    
+  
 
     unique_dates = dados_semTotal.index.get_level_values('date').unique()
     dfByTotalCases = dataFramePorColuna('totalCases', unique_dates, siglasEstados, dados_semTotal)
     dfByTotalDeaths = dataFramePorColuna('deaths', unique_dates, siglasEstados, dados_semTotal)
-
+    
+    dfByTotalCases.columns = nameEstados
+    dfByTotalDeaths.columns = nameEstados
+    #print(dfByTotalCases.columns)
     with ExcelWriter('data/Data_Brasil.xlsx') as writer:
 
         dfByTotalCases.to_excel(writer, sheet_name='Cases')
@@ -38,6 +51,7 @@ def run_crear_excel_brasil():
 
 
 def dataFramePorColuna(coluna, unique_dates, siglasEstados, dados_semTotal):
+    
     resul = pd.DataFrame(index=unique_dates, columns=siglasEstados)
 
     for estado in siglasEstados:
@@ -45,5 +59,7 @@ def dataFramePorColuna(coluna, unique_dates, siglasEstados, dados_semTotal):
         resul[estado] = test[coluna]
 
     resul.fillna(0, inplace=True)
-    resul['Total'] = resul.sum(axis=1)
+    resul['TOTAL'] = resul.sum(axis=1)
     return resul
+
+#run_crear_excel_brasil()

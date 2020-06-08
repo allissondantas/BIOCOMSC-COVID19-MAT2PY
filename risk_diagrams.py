@@ -54,13 +54,15 @@ def main():
     if filename == 'brasil' or filename == 'recife':
         brasil = True
         pt = True
+
+        dataTable = []
         
 
         if filename == 'brasil' and deaths == 'False':
             try:
                 run_crear_excel_brasil()
                 filename = 'data/Data_Brasil.xlsx'
-                filename_population = 'data/pop_Brasil_v2.xlsx'
+                filename_population = 'data/pop_Brasil_v3.xlsx'
                 sheet_name = 'Cases'
             except AttributeError:
                 print('Error! Not found file or could not download!')
@@ -68,7 +70,7 @@ def main():
             try:
                 run_crear_excel_brasil()
                 filename = 'data/Data_Brasil.xlsx'
-                filename_population = 'data/pop_Brasil_v2.xlsx'
+                filename_population = 'data/pop_Brasil_v3.xlsx'
                 sheet_name = 'Deaths'
 
             except AttributeError:
@@ -97,9 +99,7 @@ def main():
             ataque_densidade = 'Densidade de óbitos'
 
         for ID in range(len(region)):
-            #ID = 6 # Pernambuco
-
-            cumulative_cases = data[region[ID]]  # region for ALL
+            cumulative_cases = data[region[ID]]  
             cumulative_cases = cumulative_cases.to_numpy()
             new_cases = np.zeros((len(cumulative_cases)), dtype=np.int)
             for i in range(len(cumulative_cases)):
@@ -123,12 +123,10 @@ def main():
             for i in range(13, len(new_cases)):
                 p_seven[i] = np.average(p[i - 6:i + 1])
                 n_14_days[i] = np.sum(new_cases[i - 13: i + 1])
-                pop = population[region[ID]]  # 204449000
-                # pop *= 1000
+                pop = population[region[ID]] 
                 a_14_days[i] = n_14_days[i] / pop * 100000
                 risk[i] = n_14_days[i] * p_seven[i]
                 risk_per_10[i] = a_14_days[i] * p_seven[i]
-                # print(dia[i], cumulative_cases[i], new_cases[i], p[i], p_seven[i], n_14_days[i], a_14_days[i], risk[i], risk_per_10[i])
             first_day = dia[13]
             last_day = dia[len(dia) - 1]
             first_day = first_day.replace('/', '-')
@@ -137,7 +135,6 @@ def main():
                 save_path = 'reports_pdf/brasil/risk/' + last_day + '-' + region[ID] + '.pdf'
             elif brasil and pt:
                 save_path = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID] + '.pdf'
-                save_path_html = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/html/' + last_day + '-' + region[ID]+ '.html'
             else:
                 save_path = 'reports_pdf/risk/' + last_day + '-' + region[ID] + '.pdf'
 
@@ -188,59 +185,6 @@ def main():
                             red = [0.5, 'rgb(255, 0, 0)']
                             red_ = [1, 'rgb(255, 0, 0)']
 
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=a_14_days,
-                                     y=p_seven,
-                                     text=dia,
-                                     mode='lines+markers',
-                                     marker=dict(
-                                         color= a_14_days,#'White',
-                                         colorscale = [
-                                             green,
-                                             yellow,
-                                             red,
-                                             red_,
-                                             ],
-                                         
-                                         showscale = True,
-                                         size=10,
-                                         line=dict(
-                                             color='Black',
-                                             width=0.8)),
-                                     line=dict(
-                                         color="Black",
-                                         width=0.5,
-                                         dash="dot"),
-                                     ))
-            fig.add_shape(type="line",
-                          x0=1,
-                          y0=1,
-                          x1=a_14_days[len(a_14_days) - 1],
-                          y1=1,
-                          line=dict(
-                              color="Black",
-                              width=1,
-                              dash="dot",
-                          ))
-            bra_title = region[ID] + ' - Brasil'
-            fig.update_layout(plot_bgcolor='rgb(255,255,255)',
-                              title=bra_title,
-                              width = 800,
-                              height = 600,
-                              xaxis_title= ataque_densidade +' por 10^5 hab. (últimos 14 dias)',
-                              yaxis_title='\u03C1 (média de '+ cases_deaths +' dos últimos 7 dias)',
-                     
-                              )
-            fig.update_xaxes(showline=True, linewidth=2, linecolor='black', ticks="outside", tickwidth=2,
-                            tickcolor='black', ticklen=0, mirror=True, automargin=True)
-            fig.update_yaxes(showline=True, linewidth=2, linecolor='black', ticks="outside", tickwidth=2,
-                            tickcolor='black', ticklen=0, mirror=True, automargin=True)
-            
-          
-            #fig.show()
-            fig.write_html(save_path_html)
-            #break
-
             with PdfPages(save_path) as pdf:
                 fig1, ax1 = plt.subplots(sharex=True)
                 ax1.plot(a_14_days, p_seven, 'ko--', fillstyle='none', linewidth=0.5)
@@ -248,7 +192,6 @@ def main():
                 x = np.ones(int(lim[1]))
                 ax1.plot(x, 'k-', fillstyle='none', linewidth=0.5)
                 ax1.set_ylim(0, 4)
-                # ax1.set_xlim(0, len(x))
                 if brasil and pt:
                     ax1.set_ylabel('\u03C1 (média de '+ cases_deaths +' dos últimos 7 dias)')
                     ax1.set_xlabel(ataque_densidade +' por $10^5$ hab. (últimos 14 dias)')
@@ -283,7 +226,7 @@ def main():
                
                 
                 
-                if region[ID] == "PE" or sys.argv[1] == 'recife':
+                if region[ID] == "Pernambuco" or sys.argv[1] == 'recife':
                    
                     plt.subplots_adjust(bottom=0.2)
                     text_annotate = (
@@ -311,27 +254,15 @@ def main():
                             ID] + " performed successfully!\nPath:" + save_path)
                 except:
                     print("An exception occurred")
-                
-                #break # Pernambuco 
+            
+            dataTable.append([region[ID], cumulative_cases[len(cumulative_cases) - 1], new_cases[len(new_cases) - 1], p[len(p) - 1], p_seven[len(p_seven)  - 1], n_14_days[len(n_14_days) - 1], a_14_days[len(a_14_days) - 1], risk[len(risk) - 1], risk_per_10[len(risk_per_10) - 1]])    
+            #break
 
-'''
-            df = pd.DataFrame({
-                                'Day': DIA,
-                                'Cumulative cases': cumulative_cases,
-                                'New cases': new_cases,
-                                'ρ': p,
-                                'ρ7': p_seven,
-                                'New cases last 14 days (N14)': n_14_days,
-                                'New cases last 14 days per 105 inhabitants (A14)': a_14_days,
-                                'Risk (N14*ρ7)': risk,
-                                'Risk per 105 (A14*ρ7)': risk_per_10,
-                                'population':pop 
-      
-            })
-            with ExcelWriter('/home/allissondantas/Matlab/Code/Indexs_Brasil-caruaru.xlsx') as writer:
-                df.to_excel(writer, sheet_name='Alt_Urgell')
-            break
-'''
+    df = pd.DataFrame(dataTable, columns=['State', 'Cumulative cases', 'New cases', 'ρ', 'ρ7', 'New cases last 14 days (N14)', 'New cases last 14 days per 105 inhabitants (A14)', 'Risk (N14*ρ7)',  'Risk per 10^5 (A14*ρ7)' ])       
+        
+    with ExcelWriter('reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/BRASIL.xlsx') as writer:
+        df.to_excel(writer, sheet_name='Alt_Urgell')
+
             
 
 if __name__ == "__main__":
