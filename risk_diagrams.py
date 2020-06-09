@@ -45,20 +45,20 @@ def gradient_image(ax, extent, direction=0.3, cmap_range=(0, 1), **kwargs):
 
 def main():
     try:
-        filename = sys.argv[1]
+        argv_1 = sys.argv[1]
         deaths = sys.argv[2]
     except:
         print('Error! Usage: python3 risk_diagrams.py brasil')
         sys.exit()
 
-    if filename == 'brasil' or filename == 'recife':
+    if argv_1 == 'brasil' or argv_1 == 'recife':
         brasil = True
         pt = True
 
         dataTable = []
         
 
-        if filename == 'brasil' and deaths == 'False':
+        if argv_1 == 'brasil' and deaths == 'False':
             try:
                 run_crear_excel_brasil()
                 filename = 'data/Data_Brasil.xlsx'
@@ -66,7 +66,7 @@ def main():
                 sheet_name = 'Cases'
             except AttributeError:
                 print('Error! Not found file or could not download!')
-        elif filename == 'brasil' and deaths == 'True':
+        elif argv_1 == 'brasil' and deaths == 'True':
             try:
                 run_crear_excel_brasil()
                 filename = 'data/Data_Brasil.xlsx'
@@ -75,7 +75,7 @@ def main():
 
             except AttributeError:
                 print('Error! Not found file or could not download!')
-        elif filename == 'recife':
+        elif argv_1 == 'recife':
             try:
                 run_crear_excel_recife()
                 filename = 'data/cases-recife.xlsx'
@@ -244,13 +244,14 @@ def main():
                     save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID] + '.png'
                     plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
 
-                    siglasEstados = ["AC", "AL", "AP", "AM", "BA", "CE",
-                    "DF", "ES", "GO", "MA", "MT", "MS",
-                    "MG", "PA", "PB", "PR", "PE", "PI", "RJ",
-                    "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO", "TOTAL"]
+                    if argv_1 != 'recife':
+                        siglasEstados = ["AC", "AL", "AP", "AM", "BA", "CE",
+                        "DF", "ES", "GO", "MA", "MT", "MS",
+                        "MG", "PA", "PB", "PR", "PE", "PI", "RJ",
+                        "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO", "TOTAL"]
 
-                    save_path_img_site = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+ siglasEstados[ID] + '.png'
-                    plt.savefig(save_path_img_site, bbox_inches='tight', dpi=300)
+                        save_path_img_site = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+ siglasEstados[ID] + '.png'
+                        plt.savefig(save_path_img_site, bbox_inches='tight', dpi=300)
                 try:
                     pdf.savefig(fig1)
                     plt.close('all')
@@ -265,7 +266,7 @@ def main():
 
     df = pd.DataFrame(dataTable, columns=['State', 'Cumulative cases', 'New cases', 'ρ', 'ρ7', 'New cases last 14 days (N14)', 'New cases last 14 days per 105 inhabitants (A14)', 'Risk (N14*ρ7)',  'Risk per 10^5 (A14*ρ7)' ])       
         
-    with ExcelWriter('reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/BRASIL.xlsx') as writer:
+    with ExcelWriter('reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+argv_1+'.xlsx') as writer:
         df.to_excel(writer, sheet_name='Alt_Urgell')
 
             
