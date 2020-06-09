@@ -79,7 +79,7 @@ def main():
             try:
                 run_crear_excel_recife()
                 filename = 'data/cases-recife.xlsx'
-                filename_population = 'data/pop_recife.xlsx'
+                filename_population = 'data/pop_recife_v1.xlsx'
                 sheet_name = 'Cases'
 
             except AttributeError:
@@ -241,10 +241,11 @@ def main():
                 #break
 
                 if brasil and pt:
+
                     save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID] + '.png'
                     plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
 
-                    if argv_1 != 'recife':
+                    if argv_1 == 'brasil':
                         siglasEstados = ["AC", "AL", "AP", "AM", "BA", "CE",
                         "DF", "ES", "GO", "MA", "MT", "MS",
                         "MG", "PA", "PB", "PR", "PE", "PI", "RJ",
@@ -252,6 +253,9 @@ def main():
 
                         save_path_img_site = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+ siglasEstados[ID] + '.png'
                         plt.savefig(save_path_img_site, bbox_inches='tight', dpi=300)
+                    elif argv_1 == 'recife':
+                        save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/PERNAMBUCO/'+ region[ID] + '.png'
+                        plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
                 try:
                     pdf.savefig(fig1)
                     plt.close('all')
