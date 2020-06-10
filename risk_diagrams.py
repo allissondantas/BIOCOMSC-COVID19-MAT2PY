@@ -51,7 +51,7 @@ def main():
         print('Error! Usage: python3 risk_diagrams.py brasil')
         sys.exit()
 
-    if argv_1 == 'brasil' or argv_1 == 'recife':
+    if argv_1 == 'brasil' or argv_1 == 'recife' or argv_1 == 'alagoas':
         brasil = True
         pt = True
 
@@ -80,6 +80,15 @@ def main():
                 run_crear_excel_recife()
                 filename = 'data/cases-recife.xlsx'
                 filename_population = 'data/pop_recife_v1.xlsx'
+                sheet_name = 'Cases'
+
+            except AttributeError:
+                print('Error! Not found file or could not download!')
+
+        elif argv_1 == 'alagoas':
+            try:
+                filename = 'data/cases-alagoas.xlsx'
+                filename_population = 'data/pop_alagoas_v1.xlsx'
                 sheet_name = 'Cases'
 
             except AttributeError:
@@ -276,7 +285,8 @@ def main():
             
 
 if __name__ == "__main__":
-    #sys.argv.append('brasil')
-    sys.argv.append('recife')
+    sys.argv.append('brasil')
+    #sys.argv.append('recife')
+    #sys.argv.append('alagoas')
     sys.argv.append('False') # True -> Deaths False -> Cases
     main()
