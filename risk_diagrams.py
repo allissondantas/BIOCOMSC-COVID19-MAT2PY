@@ -243,6 +243,7 @@ def main():
                         "IRRD/PE. \n Fonte: SES-PE. Dados atualizados em "+ str(last_day) +".")
                     
                     plt.text(0, -1, text_annotate, fontsize=7, wrap=True)
+                
                 ax1.set_aspect('auto')
                 
 
