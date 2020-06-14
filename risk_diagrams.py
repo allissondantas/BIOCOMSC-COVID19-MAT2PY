@@ -131,14 +131,19 @@ def main():
             a_14_days = np.zeros((len(new_cases)), dtype=np.float)
             risk = np.zeros((len(new_cases)), dtype=np.float)
             risk_per_10 = np.zeros((len(new_cases)), dtype=np.float)
-            for i in range(13, len(new_cases)):
+
+            day13 = 13
+
+
+            for i in range(day13, len(new_cases)):
                 p_seven[i] = np.average(p[i - 6:i + 1])
-                n_14_days[i] = np.sum(new_cases[i - 13: i + 1])
+                n_14_days[i] = np.sum(new_cases[i - day13: i + 1])
                 pop = population[region[ID]] 
                 a_14_days[i] = n_14_days[i] / pop * 100000
                 risk[i] = n_14_days[i] * p_seven[i]
                 risk_per_10[i] = a_14_days[i] * p_seven[i]
-            first_day = dia[13]
+            
+            first_day = dia[day13]
             last_day = dia[len(dia) - 1]
             first_day = first_day.replace('/', '-')
             last_day = last_day.replace('/', '-')
@@ -195,14 +200,26 @@ def main():
                             yellow = [0.2,'rgb(255, 255, 0)']
                             red = [0.5, 'rgb(255, 0, 0)']
                             red_ = [1, 'rgb(255, 0, 0)']
-
+            #For last 15 days
+            '''
+            a_14_days_solo = []
+            day13 = len(a_14_days) - 15
+            first_day = dia[day13]
+            for i in range(len(a_14_days)):
+                if i >= len(a_14_days) - 15:
+                    a_14_days_solo.append(a_14_days[i])
+                else:
+                    a_14_days_solo.append(None)
+            '''           
             with PdfPages(save_path) as pdf:
                 fig1, ax1 = plt.subplots(sharex=True)
-                ax1.plot(a_14_days, p_seven, 'ko--', fillstyle='none', linewidth=0.5)
+                #ax1.plot(a_14_days_solo,  p_seven, 'ko--', fillstyle='none', linewidth=0.5)
+                ax1.plot(a_14_days,  p_seven, 'ko--', fillstyle='none', linewidth=0.5)
                 lim = ax1.get_xlim()
                 x = np.ones(int(lim[1]))
                 ax1.plot(x, 'k-', fillstyle='none', linewidth=0.5)
                 ax1.set_ylim(0, 4)
+                #ax1.set_xlim(a_14_days[len(a_14_days) - 1] , a_14_days[len(a_14_days) - 15])
                 if brasil and pt:
                     ax1.set_ylabel('\u03C1 (média de '+ cases_deaths +' dos últimos 7 dias)')
                     ax1.set_xlabel(ataque_densidade +' por $10^5$ hab. (últimos 14 dias)')
@@ -210,7 +227,7 @@ def main():
                     ax1.set_ylabel('$\u03C1$ (mean of the last 7 days)')
                     ax1.set_xlabel('Attack rate per $10^5$ inh. (last 14 days)')
                 ax1.annotate(first_day,
-                             xy=(a_14_days[13], p_seven[13]), xycoords='data',
+                             xy=(a_14_days[day13], p_seven[day13]), xycoords='data',
                              xytext=(len(x) - abs(len(x) / 2), 3), textcoords='data',
                              arrowprops=dict(arrowstyle="->",
                                              connectionstyle="arc3", linewidth=0.4),
