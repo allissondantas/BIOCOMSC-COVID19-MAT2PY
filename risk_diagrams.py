@@ -56,6 +56,8 @@ def main():
         pt = True
 
         dataTable = []
+        dataTable_EPG = []
+        
         
 
         if argv_1 == 'brasil' and deaths == 'False':
@@ -276,12 +278,17 @@ def main():
                     print("An exception occurred")
             
             dataTable.append([region[ID], cumulative_cases[len(cumulative_cases) - 1], new_cases[len(new_cases) - 1], p[len(p) - 1], p_seven[len(p_seven)  - 1], n_14_days[len(n_14_days) - 1], a_14_days[len(a_14_days) - 1], risk[len(risk) - 1], risk_per_10[len(risk_per_10) - 1]])    
+            
+            #for i in range(len(dia)): dataTable_EPG.append([dia[i], region[ID], risk_per_10[i]])
             #break
-
+    
     df = pd.DataFrame(dataTable, columns=['State', 'Cumulative cases', 'New cases', 'ρ', 'ρ7', 'New cases last 14 days (N14)', 'New cases last 14 days per 105 inhabitants (A14)', 'Risk (N14*ρ7)',  'Risk per 10^5 (A14*ρ7)' ])       
-        
+    #df_EPG = pd.DataFrame(dataTable_EPG, columns=['DATE', 'CITY', 'EPG']) 
+
     with ExcelWriter('reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+argv_1+'.xlsx') as writer:
         df.to_excel(writer, sheet_name='Alt_Urgell')
+    #with ExcelWriter('reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+argv_1+'_EPG.xlsx') as writer:
+    #    df_EPG.to_excel(writer, sheet_name='Alt_Urgell')
 
             
 
