@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from crear_excel_brasil import run_crear_excel_brasil
+from crear_excel_brasil_para import run_crear_excel_brasil_para
 from crear_excel_recife import run_crear_excel_recife
 from pandas import ExcelWriter
 
@@ -51,9 +52,10 @@ def main():
         print('Error! Usage: python3 risk_diagrams.py brasil')
         sys.exit()
 
-    if argv_1 == 'brasil' or argv_1 == 'recife' or argv_1 == 'alagoas':
+    if argv_1 == 'brasil' or argv_1 == 'recife' or argv_1 == 'alagoas' or argv_1 == 'para':
         brasil = True
-        pt = True
+        pt = False
+        last15days = False
 
         dataTable = []
         dataTable_EPG = []
@@ -91,6 +93,16 @@ def main():
             try:
                 filename = 'data/cases-alagoas.xlsx'
                 filename_population = 'data/pop_alagoas_v1.xlsx'
+                sheet_name = 'Cases'
+
+            except AttributeError:
+                print('Error! Not found file or could not download!')
+
+        elif argv_1 == 'para':
+            try:
+                run_crear_excel_brasil_para()
+                filename = 'data/cases-para.xlsx'
+                filename_population = 'data/pop_para_v1.xlsx'
                 sheet_name = 'Cases'
 
             except AttributeError:
@@ -147,13 +159,7 @@ def main():
             last_day = dia[len(dia) - 1]
             first_day = first_day.replace('/', '-')
             last_day = last_day.replace('/', '-')
-            if brasil and not pt:
-                save_path = 'reports_pdf/brasil/risk/' + last_day + '-' + region[ID] + '.pdf'
-            elif brasil and pt:
-                save_path = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID] + '.pdf'
-            else:
-                save_path = 'reports_pdf/risk/' + last_day + '-' + region[ID] + '.pdf'
-
+        
             for i in a_14_days:
                     if sheet_name == 'Cases':
                         if i < 30:
@@ -201,25 +207,35 @@ def main():
                             red = [0.5, 'rgb(255, 0, 0)']
                             red_ = [1, 'rgb(255, 0, 0)']
             #For last 15 days
-            '''
-            a_14_days_solo = []
-            day13 = len(a_14_days) - 15
-            first_day = dia[day13]
-            for i in range(len(a_14_days)):
-                if i >= len(a_14_days) - 15:
-                    a_14_days_solo.append(a_14_days[i])
-                else:
-                    a_14_days_solo.append(None)
-            '''           
-            with PdfPages(save_path) as pdf:
+            if last15days:
+                a_14_days_solo = []
+                day13 = len(a_14_days) - 15
+                first_day = dia[day13]
+                for i in range(len(a_14_days)):
+                    if i >= len(a_14_days) - 15:
+                        a_14_days_solo.append(a_14_days[i])
+                    else:
+                        a_14_days_solo.append(None)
+            
+
+            if brasil and pt:
+                save_path = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID]
+                save_path_xlsx = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'
+
+            else:
+                save_path = 'reports_pdf/brasil/risk-en/'+sheet_name+'/'+ last_day + '-' + region[ID]
+                save_path_xlsx = 'reports_pdf/brasil/risk-en/'+sheet_name+'/'
+
+            with PdfPages(save_path + '.pdf') as pdf:
                 fig1, ax1 = plt.subplots(sharex=True)
-                #ax1.plot(a_14_days_solo,  p_seven, 'ko--', fillstyle='none', linewidth=0.5)
-                ax1.plot(a_14_days,  p_seven, 'ko--', fillstyle='none', linewidth=0.5)
+                if last15days: 
+                    ax1.plot(a_14_days_solo,  p_seven, 'ko--', fillstyle='none', linewidth=0.5) #For last 15 days
+                else: 
+                    ax1.plot(a_14_days,  p_seven, 'ko--', fillstyle='none', linewidth=0.5)
                 lim = ax1.get_xlim()
                 x = np.ones(int(lim[1]))
                 ax1.plot(x, 'k-', fillstyle='none', linewidth=0.5)
                 ax1.set_ylim(0, 4)
-                #ax1.set_xlim(a_14_days[len(a_14_days) - 1] , a_14_days[len(a_14_days) - 15])
                 if brasil and pt:
                     ax1.set_ylabel('\u03C1 (média de '+ cases_deaths +' dos últimos 7 dias)')
                     ax1.set_xlabel(ataque_densidade +' por $10^5$ hab. (últimos 14 dias)')
@@ -285,27 +301,30 @@ def main():
                     elif argv_1 == 'recife':
                         save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/PERNAMBUCO/'+ region[ID] + '.png'
                         plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
+                else:
+                    plt.savefig(save_path + '.png', bbox_inches='tight', dpi=300)
+
                 try:
                     pdf.savefig(fig1)
                     plt.close('all')
                     print(
                         "\n\nPrediction for the region of " + region[
-                            ID] + " performed successfully!\nPath:" + save_path)
+                            ID] + " performed successfully!\nPath:" + save_path +'.png')
                 except:
                     print("An exception occurred")
             
             dataTable.append([region[ID], cumulative_cases[len(cumulative_cases) - 1], new_cases[len(new_cases) - 1], p[len(p) - 1], p_seven[len(p_seven)  - 1], n_14_days[len(n_14_days) - 1], a_14_days[len(a_14_days) - 1], risk[len(risk) - 1], risk_per_10[len(risk_per_10) - 1]])    
             
-            #for i in range(len(dia)): dataTable_EPG.append([dia[i], region[ID], risk_per_10[i]])
+            for i in range(len(dia)): dataTable_EPG.append([dia[i], region[ID], risk_per_10[i]])
             #break
     
     df = pd.DataFrame(dataTable, columns=['State', 'Cumulative cases', 'New cases', 'ρ', 'ρ7', 'New cases last 14 days (N14)', 'New cases last 14 days per 105 inhabitants (A14)', 'Risk (N14*ρ7)',  'Risk per 10^5 (A14*ρ7)' ])       
-    #df_EPG = pd.DataFrame(dataTable_EPG, columns=['DATE', 'CITY', 'EPG']) 
+    df_EPG = pd.DataFrame(dataTable_EPG, columns=['DATE', 'CITY', 'EPG']) 
 
-    with ExcelWriter('reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+argv_1+'.xlsx') as writer:
+    with ExcelWriter(save_path_xlsx + last_day + '_'+ argv_1 + '_report.xlsx') as writer:
         df.to_excel(writer, sheet_name='Alt_Urgell')
-    #with ExcelWriter('reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+argv_1+'_EPG.xlsx') as writer:
-    #    df_EPG.to_excel(writer, sheet_name='Alt_Urgell')
+    with ExcelWriter(save_path_xlsx + last_day + '_'+ argv_1 + '_report_EPG.xlsx') as writer:
+        df_EPG.to_excel(writer, sheet_name='Alt_Urgell')
 
             
 
@@ -313,5 +332,6 @@ if __name__ == "__main__":
     sys.argv.append('brasil')
     #sys.argv.append('recife')
     #sys.argv.append('alagoas')
+    #sys.argv.append('para')
     sys.argv.append('False') # True -> Deaths False -> Cases
     main()
