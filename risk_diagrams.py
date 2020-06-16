@@ -7,9 +7,7 @@ from crear_excel_brasil import run_crear_excel_brasil
 from crear_excel_brasil_para import run_crear_excel_brasil_para
 from crear_excel_recife import run_crear_excel_recife
 from pandas import ExcelWriter
-
-import plotly.graph_objects as go
-
+from scipy import interpolate
 
 def gradient_image(ax, extent, direction=0.3, cmap_range=(0, 1), **kwargs):
     """
@@ -39,7 +37,7 @@ def gradient_image(ax, extent, direction=0.3, cmap_range=(0, 1), **kwargs):
                   [v @ [0, 0], v @ [0, 1]]])
     a, b = cmap_range
     X = a + (b - a) / X.max() * X
-    im = ax.imshow(X, extent=extent, alpha=0.45, interpolation='bicubic',
+    im = ax.imshow(X, extent=extent, alpha=0.50, interpolation='bicubic',
                    vmin=0, vmax=1, **kwargs)
     return im
 
@@ -54,7 +52,7 @@ def main():
 
     if argv_1 == 'brasil' or argv_1 == 'recife' or argv_1 == 'alagoas' or argv_1 == 'para':
         brasil = True
-        pt = False
+        pt = True
         last15days = False
 
         dataTable = []
@@ -165,32 +163,19 @@ def main():
                         if i < 30:
                             c_min = 0.6
                             c_max = 0.89
-                            green = [0, 'rgb(0, 255, 0)']
-                            yellow = [0.9,'rgb(255, 255, 0)']
-                            red = [1, 'rgb(255, 0, 0)']
-                            red_ = [1, 'rgb(255, 0, 0)']
-
-                        elif 30 > i < 100:
+                        elif 30 > i < 70:
                             c_min = 0.65
                             c_max = 0.95
-                            green = [0, 'rgb(0, 255, 0)']
-                            yellow = [0.5,'rgb(255, 255, 0)']
-                            red = [1, 'rgb(255, 0, 0)']
-                            red_ = [1, 'rgb(255, 0, 0)']
-                        elif 100 > i < 200:
+                        elif 70 > i < 100:
                             c_min = 0.65
                             c_max = 1.1
-                            green = [0, 'rgb(0, 255, 0)']
-                            yellow = [0.3,'rgb(255, 255, 0)']
-                            red = [1, 'rgb(255, 0, 0)']
-                            red_ = [1, 'rgb(255, 0, 0)']
-                        else:
+                        elif 100 > i < 500:
                             c_min = 0.65
-                            c_max = 1.3
-                            green = [0, 'rgb(0, 255, 0)']
-                            yellow = [0.2,'rgb(255, 255, 0)']
-                            red = [0.5, 'rgb(255, 0, 0)']
-                            red_ = [1, 'rgb(255, 0, 0)']
+                            c_max = 1.8
+                        elif i > 500:
+                            c_min = 0.65
+                            c_max = 2.8
+                          
                     elif sheet_name == 'Deaths': 
                         if i < 10:
                             c_min = 0.6
@@ -234,8 +219,10 @@ def main():
                     ax1.plot(a_14_days,  p_seven, 'ko--', fillstyle='none', linewidth=0.5)
                 lim = ax1.get_xlim()
                 x = np.ones(int(lim[1]))
-                ax1.plot(x, 'k-', fillstyle='none', linewidth=0.5)
+                ax1.plot(x, 'k--', fillstyle='none', linewidth=0.5)
                 ax1.set_ylim(0, 4)
+                ax1.set_xlim(0, int(lim[1]))
+
                 if brasil and pt:
                     ax1.set_ylabel('\u03C1 (média de '+ cases_deaths +' dos últimos 7 dias)')
                     ax1.set_xlabel(ataque_densidade +' por $10^5$ hab. (últimos 14 dias)')
@@ -265,11 +252,29 @@ def main():
                 color_map = plt.cm.hsv
                 cmap = color_map.reversed()
                
-                gradient_image(ax1, direction=0.6, extent=(0, 1, 0, 1), transform=ax1.transAxes,
-                               cmap=cmap, cmap_range=(c_min, c_max))
-               
+                gradient_image(ax1, direction=.65, extent=(0, 1, 0, 1), transform=ax1.transAxes,
+                               cmap=cmap, cmap_range=(c_min, c_max))     
+                '''
+                fig, ax = plt.subplots(sharex=True)
+                ax.set_xlim(0, int(lim[1]))
+                ax.set_ylim(0, 4)
                 
-                
+                yellow_x = np.array([20, 50, 60, 100, int(lim[1])/2, int(lim[1])])
+                yellow_y = np.array([4, 2, 1, .5, .25, .25])
+                x_new = np.linspace(50, int(lim[1]), 300)
+                a_BSpline = interpolate.make_interp_spline(yellow_x, yellow_y)
+                y_new = a_BSpline(x_new)
+                ax.fill_between(x_new, y_new, 0, facecolor='yellow')
+
+                green_x = np.array([0, 10, 20, 50, 60, int(lim[1])])
+                green_y = np.array([4, 2, 1, .5, .25, .25])
+                x_new = np.linspace(0, int(lim[1]), 300)
+                a_BSpline = interpolate.make_interp_spline(green_x, green_y)
+                y_new = a_BSpline(x_new)
+                ax.fill_between(x_new, y_new, 0, facecolor='green')
+                '''
+
+
                 if region[ID] == "Pernambuco" or sys.argv[1] == 'recife':
                    
                     plt.subplots_adjust(bottom=0.2)
@@ -329,8 +334,8 @@ def main():
             
 
 if __name__ == "__main__":
-    sys.argv.append('brasil')
-    #sys.argv.append('recife')
+    #sys.argv.append('brasil')
+    sys.argv.append('recife')
     #sys.argv.append('alagoas')
     #sys.argv.append('para')
     sys.argv.append('False') # True -> Deaths False -> Cases

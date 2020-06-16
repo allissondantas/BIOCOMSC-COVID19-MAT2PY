@@ -2,8 +2,8 @@ import pandas as pd
 from pandas import ExcelWriter
 import sys
 
-pathToBrasil = "https://raw.githubusercontent.com/wcota/covid19br/master/cases-brazil-cities-time.csv"
-#pathToBrasil = "data/cases-brazil-cities-time.csv"
+#pathToBrasil = "https://raw.githubusercontent.com/wcota/covid19br/master/cases-brazil-cities-time.csv"
+pathToBrasil = "data/cases-brazil-cities-time.csv"
 
 
 def run_crear_excel_brasil_para():
