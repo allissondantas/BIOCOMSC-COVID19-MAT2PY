@@ -254,13 +254,35 @@ def main():
                
                 gradient_image(ax1, direction=.65, extent=(0, 1, 0, 1), transform=ax1.transAxes,
                                cmap=cmap, cmap_range=(c_min, c_max))     
+                
                 '''
                 fig, ax = plt.subplots(sharex=True)
                 ax.set_xlim(0, int(lim[1]))
                 ax.set_ylim(0, 4)
+                r = np.arange(0.0,5.0,0.01)
+                A = np.arange(0,300,0.1)
+
+                a, b = np.meshgrid(r, A)
                 
-                yellow_x = np.array([20, 50, 60, 100, int(lim[1])/2, int(lim[1])])
+                if a_14_days[len(a_14_days) - 1] > 100:
+                    epg = 100
+                else:
+                    epg = i
+                print(epg)
+
+                '''
+
+
+
+                '''
+                yellow_x = np.array([10, 50, 60, 100, int(lim[1])/2, int(lim[1])])
                 yellow_y = np.array([4, 2, 1, .5, .25, .25])
+                ax.fill_between(yellow_x, yellow_y, 0, facecolor='yellow')
+
+                green_x = np.array([0, 10, 15, 20, int(lim[1])/2, int(lim[1])])
+                green_y = np.array([4, 4, 1, .25, .15, .05])
+                ax.fill_between(green_x, green_y, 0, facecolor='green')
+
                 x_new = np.linspace(50, int(lim[1]), 300)
                 a_BSpline = interpolate.make_interp_spline(yellow_x, yellow_y)
                 y_new = a_BSpline(x_new)
@@ -273,6 +295,7 @@ def main():
                 y_new = a_BSpline(x_new)
                 ax.fill_between(x_new, y_new, 0, facecolor='green')
                 '''
+                
 
 
                 if region[ID] == "Pernambuco" or sys.argv[1] == 'recife':
@@ -291,11 +314,14 @@ def main():
                 #break
 
                 if brasil and pt:
+                    if last15days: 
+                        save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/last15days/'+ last_day + '-' + region[ID] + '_last15days.png'
+                        plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
+                    else:
+                        save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID] + '.png'
+                        plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
 
-                    save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID] + '.png'
-                    plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
-
-                    if argv_1 == 'brasil':
+                    if argv_1 == 'brasil' and last15days == False:
                         siglasEstados = ["AC", "AL", "AP", "AM", "BA", "CE",
                         "DF", "ES", "GO", "MA", "MT", "MS",
                         "MG", "PA", "PB", "PR", "PE", "PI", "RJ",
@@ -303,7 +329,7 @@ def main():
 
                         save_path_img_site = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+ siglasEstados[ID] + '.png'
                         plt.savefig(save_path_img_site, bbox_inches='tight', dpi=300)
-                    elif argv_1 == 'recife':
+                    elif argv_1 == 'recife' and last15days == False:
                         save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/PERNAMBUCO/'+ region[ID] + '.png'
                         plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
                 else:
@@ -334,8 +360,8 @@ def main():
             
 
 if __name__ == "__main__":
-    #sys.argv.append('brasil')
-    sys.argv.append('recife')
+    sys.argv.append('brasil')
+    #sys.argv.append('recife')
     #sys.argv.append('alagoas')
     #sys.argv.append('para')
     sys.argv.append('False') # True -> Deaths False -> Cases
