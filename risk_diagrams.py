@@ -360,8 +360,8 @@ def main():
             
 
 if __name__ == "__main__":
-    sys.argv.append('brasil')
-    #sys.argv.append('recife')
+    #sys.argv.append('brasil')
+    sys.argv.append('recife')
     #sys.argv.append('alagoas')
     #sys.argv.append('para')
     sys.argv.append('False') # True -> Deaths False -> Cases
