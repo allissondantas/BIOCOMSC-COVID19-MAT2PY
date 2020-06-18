@@ -7,7 +7,7 @@ from crear_excel_brasil import run_crear_excel_brasil
 from crear_excel_brasil_para import run_crear_excel_brasil_para
 from crear_excel_recife import run_crear_excel_recife
 from pandas import ExcelWriter
-from scipy import interpolate
+import colormap
 
 def gradient_image(ax, extent, direction=0.3, cmap_range=(0, 1), **kwargs):
     """
@@ -241,64 +241,27 @@ def main():
                              arrowprops=dict(arrowstyle="->",
                                              connectionstyle="arc3", linewidth=0.4),
                              )
-                 
-                
-                
+    
                 if brasil:
                     bra_title = region[ID] + ' - Brasil'
                     plt.title(bra_title)
                 else:
                     plt.title(region[ID])
-                color_map = plt.cm.hsv
-                cmap = color_map.reversed()
                
-                gradient_image(ax1, direction=.65, extent=(0, 1, 0, 1), transform=ax1.transAxes,
-                               cmap=cmap, cmap_range=(c_min, c_max))     
-                
-                '''
-                fig, ax = plt.subplots(sharex=True)
-                ax.set_xlim(0, int(lim[1]))
-                ax.set_ylim(0, 4)
-                r = np.arange(0.0,5.0,0.01)
-                A = np.arange(0,int(lim[1]),0.1)
+                rh = np.arange(0,int(lim[1]),1)
+                ar = np.linspace(0,4,400)
+              
+                RH, AR = np.meshgrid(rh, ar)
 
-                R, A = np.meshgrid(r, A)
-                epg = r.*A
-                
-                if a_14_days[len(a_14_days) - 1] > 100:
-                    epg = 100
-                else:
-                    epg = i
-                
-                ax.plot(a, b)
-                print(epg)
-                '''
-                
+                EPG = RH * AR
 
-
-
-                '''
-                yellow_x = np.array([10, 50, 60, 100, int(lim[1])/2, int(lim[1])])
-                yellow_y = np.array([4, 2, 1, .5, .25, .25])
-                ax.fill_between(yellow_x, yellow_y, 0, facecolor='yellow')
-
-                green_x = np.array([0, 10, 15, 20, int(lim[1])/2, int(lim[1])])
-                green_y = np.array([4, 4, 1, .25, .15, .05])
-                ax.fill_between(green_x, green_y, 0, facecolor='green')
-
-                x_new = np.linspace(50, int(lim[1]), 300)
-                a_BSpline = interpolate.make_interp_spline(yellow_x, yellow_y)
-                y_new = a_BSpline(x_new)
-                ax.fill_between(x_new, y_new, 0, facecolor='yellow')
-
-                green_x = np.array([0, 10, 20, 50, 60, int(lim[1])])
-                green_y = np.array([4, 2, 1, .5, .25, .25])
-                x_new = np.linspace(0, int(lim[1]), 300)
-                a_BSpline = interpolate.make_interp_spline(green_x, green_y)
-                y_new = a_BSpline(x_new)
-                ax.fill_between(x_new, y_new, 0, facecolor='green')
-                '''
-                
+                for i in range(len(EPG)):
+                    for j in range(len(EPG[i])):
+                        if EPG[i][j] > 100:
+                            EPG[i][j] = 100
+                c = colormap.Colormap()
+                mycmap = c.cmap_linear('green(w3c)', 'yellow', 'red')
+                ax1.pcolorfast([0, int(lim[1])], [0, 4],EPG, cmap=mycmap, alpha=0.6)
 
 
                 if region[ID] == "Pernambuco" or sys.argv[1] == 'recife':
