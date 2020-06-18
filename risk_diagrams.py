@@ -9,39 +9,6 @@ from crear_excel_recife import run_crear_excel_recife
 from pandas import ExcelWriter
 import colormap
 
-def gradient_image(ax, extent, direction=0.3, cmap_range=(0, 1), **kwargs):
-    """
-    Draw a gradient image based on a colormap.
-
-    Parameters
-    ----------
-    ax : Axes
-        The axes to draw on.
-    extent
-        The extent of the image as (xmin, xmax, ymin, ymax).
-        By default, this is in Axes coordinates but may be
-        changed using the *transform* kwarg.
-    direction : float
-        The direction of the gradient. This is a number in
-        range 0 (=vertical) to 1 (=horizontal).
-    cmap_range : float, float
-        The fraction (cmin, cmax) of the colormap that should be
-        used for the gradient, where the complete colormap is (0, 1).
-    **kwargs
-        Other parameters are passed on to `.Axes.imshow()`.
-        In particular useful is *cmap*.
-    """
-    phi = direction * np.pi / 2
-    v = np.array([np.cos(phi), np.sin(phi)])
-    X = np.array([[v @ [1, 0], v @ [1, 1]],
-                  [v @ [0, 0], v @ [0, 1]]])
-    a, b = cmap_range
-    X = a + (b - a) / X.max() * X
-    im = ax.imshow(X, extent=extent, alpha=0.50, interpolation='bicubic',
-                   vmin=0, vmax=1, **kwargs)
-    return im
-
-
 def main():
     try:
         argv_1 = sys.argv[1]
@@ -52,7 +19,7 @@ def main():
 
     if argv_1 == 'brasil' or argv_1 == 'recife' or argv_1 == 'alagoas' or argv_1 == 'para':
         brasil = True
-        pt = True
+        pt = False
         last15days = False
 
         dataTable = []
@@ -327,8 +294,8 @@ def main():
 
 if __name__ == "__main__":
     #sys.argv.append('brasil')
-    sys.argv.append('recife')
+    #sys.argv.append('recife')
     #sys.argv.append('alagoas')
-    #sys.argv.append('para')
+    sys.argv.append('para')
     sys.argv.append('False') # True -> Deaths False -> Cases
     main()
