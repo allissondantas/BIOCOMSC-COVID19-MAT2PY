@@ -260,17 +260,20 @@ def main():
                 ax.set_xlim(0, int(lim[1]))
                 ax.set_ylim(0, 4)
                 r = np.arange(0.0,5.0,0.01)
-                A = np.arange(0,300,0.1)
+                A = np.arange(0,int(lim[1]),0.1)
 
-                a, b = np.meshgrid(r, A)
+                R, A = np.meshgrid(r, A)
+                epg = r.*A
                 
                 if a_14_days[len(a_14_days) - 1] > 100:
                     epg = 100
                 else:
                     epg = i
+                
+                ax.plot(a, b)
                 print(epg)
-
                 '''
+                
 
 
 
