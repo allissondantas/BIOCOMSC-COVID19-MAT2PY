@@ -20,7 +20,7 @@ def main():
     if argv_1 == 'brasil' or argv_1 == 'recife' or argv_1 == 'alagoas' or argv_1 == 'para':
         brasil = True
         pt = True
-        last15days = False
+        last15days = True
 
         dataTable = []
         dataTable_EPG = []
@@ -269,10 +269,10 @@ def main():
 
             #try:
                 #pdf.savefig(fig1)
-                #plt.close('all')
-                #print(
-                #    "\n\nPrediction for the region of " + region[
-                #        ID] + " performed successfully!\nPath:" + save_path +'.png')
+            plt.close('all')
+            print(
+                "\n\nPrediction for the region of " + region[
+                        ID] + " performed successfully!\nPath:" + save_path +'.png')
             #except:
                 #print("An exception occurred")
         
