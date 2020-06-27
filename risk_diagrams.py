@@ -126,39 +126,6 @@ def main():
             first_day = first_day.replace('/', '-')
             last_day = last_day.replace('/', '-')
         
-            for i in a_14_days:
-                    if sheet_name == 'Cases':
-                        if i < 30:
-                            c_min = 0.6
-                            c_max = 0.89
-                        elif 30 > i < 70:
-                            c_min = 0.65
-                            c_max = 0.95
-                        elif 70 > i < 100:
-                            c_min = 0.65
-                            c_max = 1.1
-                        elif 100 > i < 500:
-                            c_min = 0.65
-                            c_max = 1.8
-                        elif i > 500:
-                            c_min = 0.65
-                            c_max = 2.8
-                          
-                    elif sheet_name == 'Deaths': 
-                        if i < 10:
-                            c_min = 0.6
-                            c_max = 0.89
-                            green = [0, 'rgb(0, 255, 0)']
-                            yellow = [0.9,'rgb(255, 255, 0)']
-                            red = [1, 'rgb(255, 0, 0)']
-                            red_ = [1, 'rgb(255, 0, 0)']
-                        elif i > 10:
-                            c_min = 0.65
-                            c_max = 1.3
-                            green = [0, 'rgb(0, 255, 0)']
-                            yellow = [0.2,'rgb(255, 255, 0)']
-                            red = [0.5, 'rgb(255, 0, 0)']
-                            red_ = [1, 'rgb(255, 0, 0)']
             #For last 15 days
             if last15days:
                 a_14_days_solo = []
@@ -181,8 +148,10 @@ def main():
             fig1, ax1 = plt.subplots(sharex=True)
             if last15days: 
                 ax1.plot(a_14_days_solo,  p_seven, 'ko--', fillstyle='none', linewidth=0.5) #For last 15 days
+                ax1.plot(a_14_days_solo[len(a_14_days_solo) - 1],  p_seven[len(p_seven) - 1], 'bo')
             else: 
                 ax1.plot(a_14_days,  p_seven, 'ko--', fillstyle='none', linewidth=0.5)
+                ax1.plot(a_14_days[len(a_14_days) - 1],  p_seven[len(p_seven) - 1], 'bo')
             lim = ax1.get_xlim()
             x = np.ones(int(lim[1]))
             ax1.plot(x, 'k--', fillstyle='none', linewidth=0.5)
@@ -289,7 +258,7 @@ def main():
         df_EPG.to_excel(writer, sheet_name='Alt_Urgell')
 
 if __name__ == "__main__":
-    #sys.argv.append('brasil')
+    sys.argv.append('brasil')
     #sys.argv.append('recife')
     #sys.argv.append('alagoas')
     #sys.argv.append('para')
