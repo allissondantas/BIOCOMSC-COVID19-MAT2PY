@@ -29,7 +29,7 @@ def main():
             try:
                 run_crear_excel_brasil()
                 filename = 'data/Data_Brasil.xlsx'
-                filename_population = 'data/pop_Brasil_v2.xlsx'
+                filename_population = 'data/pop_Brasil_v3.xlsx'
 
             except AttributeError:
                 print('Error! Not found file or could not download!')
