@@ -19,8 +19,8 @@ def main():
 
     if argv_1 == 'brasil' or argv_1 == 'recife' or argv_1 == 'alagoas' or argv_1 == 'para':
         brasil = True
-        pt = False
-        last15days = False
+        pt = True
+        last15days = True
 
         dataTable = []
         dataTable_EPG = []
