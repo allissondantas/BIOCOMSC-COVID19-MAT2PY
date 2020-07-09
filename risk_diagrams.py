@@ -8,6 +8,52 @@ from crear_excel_brasil_para import run_crear_excel_brasil_para
 from crear_excel_recife import run_crear_excel_recife
 from pandas import ExcelWriter
 import colormap
+import plotly.graph_objects as go
+
+
+def plotly_html(a_14_days, p_seven, dia, bra_title, save_path):
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=a_14_days,
+                             y=p_seven,
+                             text=dia,
+                             mode='lines+markers',
+                             marker=dict(
+                                 #color=a_14_days,
+                                 color = 'rgba(255, 255, 255, 0.3)',
+                                 showscale=False,
+                                 size=10,
+                                 line=dict(
+                                     color='Black',
+                                     width=0.8)),
+                             line=dict(
+                                 color="Black",
+                                 width=0.5,
+                                 dash="dot"),
+                             ))
+    fig.add_shape(type="line",
+                  x0=1,
+                  y0=1,
+                  x1=max(a_14_days),
+                  y1=1,
+                  line=dict(
+                      color="Black",
+                      width=1,
+                      dash="dot",
+                  ))
+    fig.update_layout(plot_bgcolor='rgb(255,255,255)',
+                      title=bra_title,
+                      width=1280,
+                      height=720,
+                      xaxis_title='Taxa de ataque por 10^5 hab. (últimos 14 dias)',
+                      yaxis_title='\u03C1 (média dos últimos 7 dias)',
+
+                      )
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black', ticks="outside", tickwidth=2,
+                     tickcolor='black', ticklen=0, mirror=True, automargin=True)
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black', ticks="outside", tickwidth=2,
+                     tickcolor='black', ticklen=0, mirror=True, automargin=True)
+
+    fig.write_html(save_path + 'html/' + bra_title + '.html')
 
 def main():
     try:
@@ -21,6 +67,7 @@ def main():
         brasil = True
         pt = True
         last15days = False
+        html = True
 
         dataTable = []
         dataTable_EPG = []
@@ -244,6 +291,8 @@ def main():
                         ID] + " performed successfully!\nPath:" + save_path +'.png')
             #except:
                 #print("An exception occurred")
+            if html: 
+                plotly_html(a_14_days, p_seven, dia, bra_title, save_path_xlsx)
         
             dataTable.append([region[ID], cumulative_cases[len(cumulative_cases) - 1], new_cases[len(new_cases) - 1], p[len(p) - 1], p_seven[len(p_seven)  - 1], n_14_days[len(n_14_days) - 1], a_14_days[len(a_14_days) - 1], risk[len(risk) - 1], risk_per_10[len(risk_per_10) - 1]])    
             
