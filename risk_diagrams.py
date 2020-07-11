@@ -67,7 +67,7 @@ def main():
         brasil = True
         pt = True
         last15days = False
-        html = False
+        html = True
 
         dataTable = []
         dataTable_EPG = []
