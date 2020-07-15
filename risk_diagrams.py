@@ -206,7 +206,8 @@ def main():
             ax1.set_xlim(0, int(lim[1]))
 
             if brasil and pt:
-                ax1.set_ylabel('\u03C1 (média de '+ cases_deaths +' dos últimos 7 dias)')
+                #ax1.set_ylabel('\u03C1 (média de '+ cases_deaths +' dos últimos 7 dias)')
+                ax1.set_ylabel('\u03C1 (média dos últimos 7 dias)')
                 ax1.set_xlabel(ataque_densidade +' por $10^5$ hab. (últimos 14 dias)')
             else:
                 ax1.set_ylabel('$\u03C1$ (mean of the last 7 days)')
