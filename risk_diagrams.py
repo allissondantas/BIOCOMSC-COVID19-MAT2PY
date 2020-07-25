@@ -8,7 +8,7 @@ from crear_excel_brasil_para import run_crear_excel_brasil_para
 from crear_excel_recife import run_crear_excel_recife
 from pandas import ExcelWriter
 import colormap
-import plotly.graph_objects as go
+import plotly.graph_objects as go   
 
 
 def plotly_html(a_14_days, p_seven, dia, bra_title, save_path):
@@ -67,7 +67,7 @@ def main():
         brasil = True
         pt = True
         last15days = False
-        html = True
+        html = False
 
         dataTable = []
         dataTable_EPG = []
