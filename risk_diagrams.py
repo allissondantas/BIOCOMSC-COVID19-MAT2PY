@@ -55,13 +55,16 @@ def plotly_html(a_14_days, p_seven, dia, bra_title, save_path):
 
     fig.write_html(save_path + 'html/' + bra_title + '.html')
 
-def main():
+def run_risk_diagrams(argv_1, deaths):
+    '''
+def run_risk_diagrams():
     try:
         argv_1 = sys.argv[1]
         deaths = sys.argv[2]
     except:
-        print('Error! Usage: python3 risk_diagrams.py brasil')
+        print('Error! Usage: python3 risk_diagrams.py brasil False')
         sys.exit()
+    '''
 
     if argv_1 == 'brasil' or argv_1 == 'recife' or argv_1 == 'alagoas' or argv_1 == 'para':
         brasil = True
@@ -247,7 +250,7 @@ def main():
             ax1.pcolorfast([0, int(lim[1])], [0, 4],EPG, cmap=mycmap, alpha=0.6)
 
 
-            if region[ID] == "Pernambuco" or sys.argv[1] == 'recife':
+            if region[ID] == "Pernambuco" or argv_1 == 'recife':
                 
                 plt.subplots_adjust(bottom=0.2)
                 text_annotate = (
@@ -306,11 +309,12 @@ def main():
         df.to_excel(writer, sheet_name='Alt_Urgell')
     with ExcelWriter(save_path_xlsx + last_day + '_'+ argv_1 + '_report_EPG.xlsx') as writer:
         df_EPG.to_excel(writer, sheet_name='Alt_Urgell')
-
+'''
 if __name__ == "__main__":
-    sys.argv.append('brasil')
+    #sys.argv.append('brasil')
     #sys.argv.append('recife')
     #sys.argv.append('para')
     #sys.argv.append('alagoas')
-    sys.argv.append('False') # True -> Deaths False -> Cases
-    main()
+    #sys.argv.append('False') # True -> Deaths False -> Cases
+    run_risk_diagrams()
+'''
