@@ -55,7 +55,7 @@ def plotly_html(a_14_days, p_seven, dia, bra_title, save_path):
 
     fig.write_html(save_path + 'html/' + bra_title + '.html')
 
-def run_risk_diagrams(argv_1, deaths):
+def run_risk_diagrams(argv_1, deaths, file_others_cases, file_others_pop):
     '''
 def run_risk_diagrams():
     try:
@@ -66,7 +66,7 @@ def run_risk_diagrams():
         sys.exit()
     '''
 
-    if argv_1 == 'brasil' or argv_1 == 'recife' or argv_1 == 'alagoas' or argv_1 == 'para':
+    if argv_1:
         brasil = True
         pt = True
         last15days = False
@@ -118,6 +118,14 @@ def run_risk_diagrams():
                 run_crear_excel_brasil_para()
                 filename = 'data/cases-para.xlsx'
                 filename_population = 'data/pop_para_v1.xlsx'
+                sheet_name = 'Cases'
+
+            except AttributeError:
+                print('Error! Not found file or could not download!')
+        elif argv_1 == 'others' and deaths == 'False':
+            try:
+                filename = file_others_cases
+                filename_population = file_others_pop
                 sheet_name = 'Cases'
 
             except AttributeError:
