@@ -118,7 +118,7 @@ class Application:
             
             self.statusbar["text"] = "Ready!"      
         else:
-            messagebox.showerror("error", "try again")
+            messagebox.showerror("Error!!!", "*Fields are required, try again.")
             
 
     def open_file(self, path):
