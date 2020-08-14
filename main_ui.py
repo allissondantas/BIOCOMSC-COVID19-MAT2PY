@@ -10,82 +10,92 @@ class Application:
 
     def __init__(self, master=None):
         self.path = os.getcwd()
-        self.logo = PhotoImage(file="logo.png")
+        self.logo = PhotoImage(file="logo_.png")
 
         self.data_name = ""
         self.data_name_pop = ""
 
-        self.logo_label = Label(root, image=self.logo)
-        self.logo_label.pack(side=TOP)
+       
+
+        self.widget = Frame(master)
+        self.widget.configure(background='#007DFF')
+        self.widget.pack(fill = 'x')
 
         self.widget1 = Frame(master)
+        self.widget1.configure(background='white')
         self.widget1.pack()
 
         self.widget2 = Frame(master)
+        self.widget2.configure(background='white')
         self.widget2.pack()
 
         self.widget3 = Frame(master)
-        self.widget3.pack()
+        self.widget3.configure(background='white')
+        self.widget3.pack(pady=20)
 
-        self.msg = Label(self.widget1, text="\nGenerate risk diagrams automatically:\n")
-        self.msg.pack()
+        self.widget4 = Frame(master)
+        self.widget4.configure(background='white')
+        self.widget4.pack()
 
-        self.data_recife = Button(self.widget1, width =25)
+        self.logo_label = Label(self.widget, image=self.logo, background='#007DFF')
+        self.logo_label.pack(side=TOP)
+
+        self.msg = Label(self.widget1, text="\nGenerate risk diagrams automatically:\n", background='white', fg="gray12")
+        self.msg.pack() 
+
+        self.data_recife = Button(self.widget1, width =20,bg="gray12",  fg="white", bd=1, activebackground="#007DFF", activeforeground='white')
         self.data_recife["text"] = "Pernambuco and Regions"
         self.data_recife.bind("<Button-1>", self.bind_data_recife)
-        self.data_recife.pack()
+        self.data_recife.pack(pady=8)
 
-        self.data_brasil = Button(self.widget1, width =25)
+        self.data_brasil = Button(self.widget1, width =20,bg="gray12",  fg="white", bd=1, activebackground="#007DFF", activeforeground='white')
         self.data_brasil["text"] = "Brazil"
         self.data_brasil.bind("<Button-1>", self.bind_data_brasil)
         self.data_brasil.pack()
 
-        self.msg_2 = Label(self.widget2, wraplength=325, text="\nGenerate risk diagrams from the file:\n")
+        self.msg_2 = Label(self.widget2, text="\nGenerate risk diagrams from the file [.xlsx]:\n", background='white', fg="gray12")
         self.msg_2.pack()
 
-        self.browser = Button(self.widget2, width =25)
-        self.browser["text"] = "Browser data file"
+        self.browser = Button(self.widget2, width =20, bg="gray12",  fg="white", bd=1, activebackground="#007DFF", activeforeground='white')
+        self.browser["text"] = "Data file"
         self.browser.bind("<Button-1>", self.onOpen)
-        self.browser.pack(fill=X)
+        self.browser.pack()
 
 
-        self.msg_browser = Label(self.widget2,wraplength=325, text="None")
+        self.msg_browser = Label(self.widget2,wraplength=325, text="None", background='white')
         self.msg_browser.config(font=("Arial", 8))
         self.msg_browser.pack()
         
-        self.browser_pop = Button(self.widget2,wraplength=325, width =25)
-        self.browser_pop["text"] = "Browser population file"
+        self.browser_pop = Button(self.widget2, width =20, bg="gray12",  fg="white", bd=1, activebackground="#007DFF", activeforeground='white')
+        self.browser_pop["text"] = "Population file"
         self.browser_pop.bind("<Button-1>", self.onOpen)
-        self.browser_pop.pack(fill=X)
+        self.browser_pop.pack()
 
         
-        self.msg_browser_pop = Label(self.widget2,wraplength=325, text="None")
+        self.msg_browser_pop = Label(self.widget2,wraplength=325, text="None", background='white')
         self.msg_browser_pop.config(font=("Arial", 8))
         self.msg_browser_pop.pack()
 
-        self.send = Button(self.widget2,wraplength=325, width =25)
+        self.send = Button(self.widget2, width =20, bg="gray12", fg="white", bd=1, activebackground="green", activeforeground='white')
         self.send["text"] = "Generate"
         self.send.bind("<Button-1>", self.bind_data_others)
-        self.send.pack(fill=X)
-        
+        self.send.pack()
 
-        '''
-        self.sair = Button(self.widget1)
-        self.sair["text"] = "Sair"
-        self.sair["command"] = self.widget1.quit
-        self.sair.pack()
-        '''
+        self.logo_by = PhotoImage(file="by.png")
+        self.logo_by_label = Label(self.widget4, image=self.logo_by, background='white')
+        self.logo_by_label.pack(pady=20)
 
-        self.statusbar = Label(root, text="Ready!", bd=1, relief=SUNKEN, anchor=W)
+        self.msg_bottom = Label(self.widget4, wraplength=325, background='white', text="Risk Diagrams of COVID-19 created by (BIOCOMSC) and avalaible in https://biocomsc.upc.edu/en/covid-19/informativedocument.\n\nMIT License\nCopyright (c) 2020.")
+        self.msg_bottom.config(font=("Courier", 6))
+        self.msg_bottom.pack(fill=X)
+
+        self.statusbar = Label(app, text="Ready!", bd=1, relief=SUNKEN, anchor=W)
         self.statusbar.pack(side=BOTTOM, fill=X)
 
-        self.msg_bottom = Label(root, wraplength=325, text="This is a translation Matlab to Python code for the Analysis and prediction of COVID-19 created by (BIOCOMSC) and avalaible in https://biocomsc.upc.edu/en/covid-19/informativedocument.\n\nMIT License\nCopyright (c) 2020.")
-        self.msg_bottom.config(font=("Courier", 6))
-        self.msg_bottom.pack(side=BOTTOM, fill=X)
 
     def bind_data_recife(self, event):
         self.statusbar["text"] = "Loading ... Please wait ..."
-        root.update_idletasks()
+        app.update_idletasks()
         try:
             run_risk_diagrams('recife', 'False', None, None)
             self.path_recife = self.path+'/reports_pdf/brasil/risk-pt/Cases'
@@ -96,7 +106,7 @@ class Application:
 
     def bind_data_brasil(self, event):
         self.statusbar["text"] = "Loading ... Please wait ..."
-        root.update_idletasks()
+        app.update_idletasks()
         try:
             run_risk_diagrams('brasil', 'False', None, None)
             self.path_brasil = self.path+'/reports_pdf/brasil/risk-pt/Cases'
@@ -108,7 +118,7 @@ class Application:
     def bind_data_others(self, event):
         if self.data_name != "" and self.data_name_pop != "" :
             self.statusbar["text"] = "Loading ... Please wait ..."
-            root.update_idletasks()
+            app.update_idletasks()
             try:
                 run_risk_diagrams('others', 'False', self.data_name, self.data_name_pop)
                 self.path_others = self.path+'/reports_pdf/brasil/risk-pt/Cases'
@@ -139,8 +149,9 @@ class Application:
             
 
 
-root = Tk()
-root.title("[COVID19] Risk Diagrams by UPC and IRRD")
-root.geometry("350x550")
-Application(root)
-root.mainloop()
+app = Tk()
+app.title("[COVID19] Risk Diagrams by UPC and IRRD")
+app.geometry("350x580")
+app.configure(background='white')
+Application(app)
+app.mainloop()
