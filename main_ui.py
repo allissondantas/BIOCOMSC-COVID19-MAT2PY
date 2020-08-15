@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog as fd 
+from tkinter import ttk
 from risk_diagrams import run_risk_diagrams
 import os
 import platform
