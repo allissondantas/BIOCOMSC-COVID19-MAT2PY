@@ -79,7 +79,7 @@ def run_risk_diagrams():
 
         if argv_1 == 'brasil' and deaths == 'False':
             try:
-                run_crear_excel_brasil()
+                #run_crear_excel_brasil()
                 filename = 'data/Data_Brasil.xlsx'
                 filename_population = 'data/pop_Brasil_v3.xlsx'
                 sheet_name = 'Cases'
