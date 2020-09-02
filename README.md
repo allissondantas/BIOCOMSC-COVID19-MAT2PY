@@ -28,6 +28,10 @@ https://github.com/allissondantas/BIOCOMSC-COVID19-MAT2PY/archive/master.zip
 Run in command line:
 ```sh
 $python3 main_ui.py 
+
+or 
+
+$python3 main_cli.py
 ```
 
 License
