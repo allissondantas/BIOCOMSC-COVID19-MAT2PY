@@ -34,6 +34,8 @@ or
 $python3 main_cli.py
 ```
 
+[![screenshot](screenshot.png)]
+
 License
 ---- 
 
