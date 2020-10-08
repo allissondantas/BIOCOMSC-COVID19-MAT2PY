@@ -8,6 +8,7 @@ Returns:
 import pandas as pd
 from pandas import ExcelWriter
 import sys
+import requests
 
 pathToBrasil = "https://raw.githubusercontent.com/wcota/covid19br/master/cases-brazil-states.csv"
 
@@ -26,7 +27,8 @@ nameEstados = ["Acre", "Alagoas", "Amapá", "Amazonas", "Bahia", "Ceará",
 
 def run_crear_excel_brasil():
     try:
-        dados = pd.read_csv(pathToBrasil)
+        link = requests.get(pathToBrasil)
+        dados = pd.read_csv(link.url)
         print('Data obtained from: ', pathToBrasil)
         dados_semTotal = dados[dados['state'] != 'TOTAL']
     except:
@@ -61,5 +63,6 @@ def dataFramePorColuna(coluna, unique_dates, siglasEstados, dados_semTotal):
     resul.fillna(0, inplace=True)
     resul['TOTAL'] = resul.sum(axis=1)
     return resul
-
-#run_crear_excel_brasil()
+    
+if __name__ == '__main__':
+    run_crear_excel_brasil()

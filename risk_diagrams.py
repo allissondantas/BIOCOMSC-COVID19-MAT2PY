@@ -319,6 +319,8 @@ def run_risk_diagrams():
         df_EPG.to_excel(writer, sheet_name='Alt_Urgell')
 '''
 if __name__ == "__main__":
+    run_risk_diagrams('recife', 'False', None, None)
+
     #sys.argv.append('brasil')
     #sys.argv.append('recife')
     #sys.argv.append('para')
