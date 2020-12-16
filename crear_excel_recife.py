@@ -4,7 +4,7 @@ from crear_excel_brasil import dataFramePorColuna
 from datetime import datetime
 import requests
 
-path_recife = 'https://raw.githubusercontent.com/JTeodomiro/covid19PE/master/PE_Cidades_DATA.csv'
+path_recife = 'https://raw.githubusercontent.com/edneide/covid-19_Pernambuco/master/total_cases_PE.csv'
 save_filename = 'data/cases-recife.xlsx'
 
 

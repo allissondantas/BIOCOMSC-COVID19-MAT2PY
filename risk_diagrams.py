@@ -1,14 +1,22 @@
 import sys
 import pandas as pd
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from crear_excel_brasil import run_crear_excel_brasil
 from crear_excel_brasil_para import run_crear_excel_brasil_para
 from crear_excel_recife import run_crear_excel_recife
+from crear_excel_malawi import run_crear_excel_malawi
+from crear_excel_by_ourworldindata import run_crear_excel_ourworldindata
 from pandas import ExcelWriter
 import colormap
 import plotly.graph_objects as go   
+from risk_animated import run_animation
+from PIL import Image
+
+
+matplotlib.use('tkagg')
 
 
 def plotly_html(a_14_days, p_seven, dia, bra_title, save_path):
@@ -40,14 +48,17 @@ def plotly_html(a_14_days, p_seven, dia, bra_title, save_path):
                       width=1,
                       dash="dot",
                   ))
+   
+    
     fig.update_layout(plot_bgcolor='rgb(255,255,255)',
                       title=bra_title,
-                      width=1280,
-                      height=720,
+                      width=1488,
+                      height=1108,
                       xaxis_title='Taxa de ataque por 10^5 hab. (últimos 14 dias)',
                       yaxis_title='\u03C1 (média dos últimos 7 dias)',
 
                       )
+    
     fig.update_xaxes(showline=True, linewidth=2, linecolor='black', ticks="outside", tickwidth=2,
                      tickcolor='black', ticklen=0, mirror=True, automargin=True)
     fig.update_yaxes(showline=True, linewidth=2, linecolor='black', ticks="outside", tickwidth=2,
@@ -55,28 +66,29 @@ def plotly_html(a_14_days, p_seven, dia, bra_title, save_path):
 
     fig.write_html(save_path + 'html/' + bra_title + '.html')
 
-def run_risk_diagrams(argv_1, deaths, file_others_cases, file_others_pop):
-    '''
-def run_risk_diagrams():
-    try:
-        argv_1 = sys.argv[1]
-        deaths = sys.argv[2]
-    except:
-        print('Error! Usage: python3 risk_diagrams.py brasil False')
-        sys.exit()
-    '''
+def run_risk_diagrams(argv_1, deaths, file_others_cases, file_others_pop, radio_valor):
 
     if argv_1:
-        brasil = True
-        pt = True
-        last15days = False
+        last_days_time = 30
+        brasil = False
+        pt = False
         html = False
+        last_days = False
+        animation = False 
+
+        if radio_valor == 1:
+            last_days = True
+        elif radio_valor == 2:
+            html = True
+        elif radio_valor == 3:
+            animation = True
+        else:
+            pass
+
 
         dataTable = []
         dataTable_EPG = []
         
-        
-
         if argv_1 == 'brasil' and deaths == 'False':
             try:
                 run_crear_excel_brasil()
@@ -106,6 +118,8 @@ def run_risk_diagrams():
 
         elif argv_1 == 'alagoas':
             try:
+                brasil = True
+                pt = True
                 filename = 'data/cases-alagoas.xlsx'
                 filename_population = 'data/pop_alagoas_v1.xlsx'
                 sheet_name = 'Cases'
@@ -122,6 +136,28 @@ def run_risk_diagrams():
 
             except AttributeError:
                 print('Error! Not found file or could not download!')
+
+        elif argv_1 == 'malawi' and deaths == 'False':
+            try:
+                run_crear_excel_malawi()
+                filename = 'data/cases-malawi.xlsx'
+                filename_population = 'data/pop_malawi_v1.xlsx'
+                sheet_name = 'Cases'
+
+            except AttributeError:
+                print('Error! Not found file or could not download!')
+        
+        elif argv_1 == 'ourworldindata' and deaths == 'False':
+            try:
+                country = 'Canada'
+                run_crear_excel_ourworldindata(country)
+                filename = 'data/ourworldindata.xlsx'
+                filename_population = 'data/pop_ourworldindata_v1.xlsx'
+                sheet_name = 'Cases'
+
+            except AttributeError:
+                print('Error! Not found file or could not download!')
+
         elif argv_1 == 'others' and deaths == 'False':
             try:
                 filename = file_others_cases
@@ -131,7 +167,7 @@ def run_risk_diagrams():
             except AttributeError:
                 print('Error! Not found file or could not download!')
         
-
+        
         data = pd.read_excel(filename, sheet_name= sheet_name)
         population = pd.read_excel(filename_population)
         dia = pd.to_datetime(data['date']).dt.strftime('%d/%m/%Y')
@@ -185,12 +221,12 @@ def run_risk_diagrams():
             last_day = last_day.replace('/', '-')
         
             #For last 15 days
-            if last15days:
+            if last_days:
                 a_14_days_solo = []
-                day13 = len(a_14_days) - 15
+                day13 = len(a_14_days) - last_days_time
                 first_day = dia[day13]
                 for i in range(len(a_14_days)):
-                    if i >= len(a_14_days) - 15:
+                    if i >= len(a_14_days) - last_days_time:
                         a_14_days_solo.append(a_14_days[i])
                     else:
                         a_14_days_solo.append(None)
@@ -204,7 +240,7 @@ def run_risk_diagrams():
            
             #with PdfPages(save_path + '.pdf') as pdf:
             fig1, ax1 = plt.subplots(sharex=True)
-            if last15days: 
+            if last_days: 
                 ax1.plot(a_14_days_solo,  p_seven, 'ko--', fillstyle='none', linewidth=0.5) #For last 15 days
                 ax1.plot(a_14_days_solo[len(a_14_days_solo) - 1],  p_seven[len(p_seven) - 1], 'bo')
             else: 
@@ -240,6 +276,7 @@ def run_risk_diagrams():
                 bra_title = region[ID] + ' - Brasil'
                 plt.title(bra_title)
             else:
+                bra_title = region[ID]
                 plt.title(region[ID])
             
             rh = np.arange(0,int(lim[1]),1)
@@ -259,7 +296,8 @@ def run_risk_diagrams():
 
 
             if region[ID] == "Pernambuco" or argv_1 == 'recife':
-                
+                brasil = True
+                pt = True
                 plt.subplots_adjust(bottom=0.2)
                 text_annotate = (
                     "*A zona vermelha representa alto risco de infecção, enquanto a zona verde representa baixo risco.\n Valores calculados baseados na incidência diária de "+ cases_deaths +" e população. "
@@ -268,20 +306,23 @@ def run_risk_diagrams():
                 plt.text(0, -1, text_annotate, fontsize=7, wrap=True)
             
             ax1.set_aspect('auto')
-            
+
+
+            if(animation):
+                run_animation(a_14_days, p_seven, int(lim[1]), bra_title, last_day, False)
 
             #plt.show()
             #break
 
             if brasil and pt:
-                if last15days: 
+                if last_days: 
                     save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/last15days/'+ last_day + '-' + region[ID] + '_last15days.png'
                     plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
                 else:
                     save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/'+ last_day + '-' + region[ID] + '.png'
                     plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
 
-                if argv_1 == 'brasil' and last15days == False:
+                if argv_1 == 'brasil' and last_days == False:
                     siglasEstados = ["AC", "AL", "AP", "AM", "BA", "CE",
                     "DF", "ES", "GO", "MA", "MT", "MS",
                     "MG", "PA", "PB", "PR", "PE", "PI", "RJ",
@@ -289,7 +330,7 @@ def run_risk_diagrams():
 
                     save_path_img_site = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/'+ siglasEstados[ID] + '.png'
                     plt.savefig(save_path_img_site, bbox_inches='tight', dpi=300)
-                elif argv_1 == 'recife' and last15days == False:
+                elif argv_1 == 'recife' and last_days == False:
                     save_path_img = 'reports_pdf/brasil/risk-pt/'+sheet_name+'/IRRD/PERNAMBUCO/'+ region[ID] + '.png'
                     plt.savefig(save_path_img, bbox_inches='tight', dpi=300)
             else:
@@ -305,6 +346,7 @@ def run_risk_diagrams():
                 #print("An exception occurred")
             if html: 
                 plotly_html(a_14_days, p_seven, dia, bra_title, save_path_xlsx)
+
         
             dataTable.append([region[ID], cumulative_cases[len(cumulative_cases) - 1], new_cases[len(new_cases) - 1], p[len(p) - 1], p_seven[len(p_seven)  - 1], n_14_days[len(n_14_days) - 1], a_14_days[len(a_14_days) - 1], risk[len(risk) - 1], risk_per_10[len(risk_per_10) - 1]])    
             
@@ -317,14 +359,3 @@ def run_risk_diagrams():
         df.to_excel(writer, sheet_name='Alt_Urgell')
     with ExcelWriter(save_path_xlsx + last_day + '_'+ argv_1 + '_report_EPG.xlsx') as writer:
         df_EPG.to_excel(writer, sheet_name='Alt_Urgell')
-'''
-if __name__ == "__main__":
-    run_risk_diagrams('recife', 'False', None, None)
-
-    #sys.argv.append('brasil')
-    #sys.argv.append('recife')
-    #sys.argv.append('para')
-    #sys.argv.append('alagoas')
-    #sys.argv.append('False') # True -> Deaths False -> Cases
-    run_risk_diagrams()
-'''

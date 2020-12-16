@@ -76,11 +76,24 @@ class Application:
         self.msg_browser_pop = Label(self.widget2,wraplength=325, text="None", background='white')
         self.msg_browser_pop.config(font=("Arial", 8))
         self.msg_browser_pop.pack()
-
+        
         self.send = Button(self.widget2, width =20, bg="gray12", fg="white", bd=1, activebackground="green", activeforeground='white')
         self.send["text"] = "Generate"
         self.send.bind("<Button-1>", self.bind_data_others)
         self.send.pack()
+
+        self.radio_valor = IntVar()
+        self.msg_radio = Label(self.widget3,wraplength=325, text="Extra options (Not required)", background='white')
+        self.only_one_month = Radiobutton(self.widget3, text='Only 1 month', width =20, background='white', foreground='black', activebackground="black", activeforeground='white',\
+        variable = self.radio_valor, value=1)
+        self.with_html = Radiobutton(self.widget3, text='HTML(plotly)', width =20, background='white', foreground='black', activebackground="black", activeforeground='white',\
+            variable = self.radio_valor, value=2)
+        self.animation = Radiobutton(self.widget3, text='Animation', width =20, background='white', foreground='black', activebackground="black", activeforeground='white',\
+            variable = self.radio_valor, value=3)
+        self.msg_radio.pack()
+        self.only_one_month.pack()
+        self.with_html.pack()
+        self.animation.pack()
 
         self.logo_by = PhotoImage(file="by.png")
         self.logo_by_label = Label(self.widget4, image=self.logo_by, background='white')
@@ -98,10 +111,10 @@ class Application:
         self.statusbar["text"] = "Loading ... Please wait ..."
         app.update_idletasks()
         try:
-            run_risk_diagrams('recife', 'False', None, None)
+            run_risk_diagrams('recife', 'False', None, None, self.radio_valor.get())
             self.path_recife = self.path+'/reports_pdf/brasil/risk-pt/Cases'
             self.open_file(self.path_recife)
-        except:
+        except ValueError:
             messagebox.showerror("Error!!!", "No internet access or service not available!")
         self.statusbar["text"] = "Ready!"
 
@@ -109,10 +122,10 @@ class Application:
         self.statusbar["text"] = "Loading ... Please wait ..."
         app.update_idletasks()
         try:
-            run_risk_diagrams('brasil', 'False', None, None)
+            run_risk_diagrams('brasil', 'False', None, None, self.radio_valor.get())
             self.path_brasil = self.path+'/reports_pdf/brasil/risk-pt/Cases'
             self.open_file(self.path_brasil)
-        except:
+        except ValueError:
             messagebox.showerror("Error!!!", "No internet access or service not available!")
         self.statusbar["text"] = "Ready!"
     
@@ -121,10 +134,10 @@ class Application:
             self.statusbar["text"] = "Loading ... Please wait ..."
             app.update_idletasks()
             try:
-                run_risk_diagrams('others', 'False', self.data_name, self.data_name_pop)
+                run_risk_diagrams('others', 'False', self.data_name, self.data_name_pop, self.radio_valor.get())
                 self.path_others = self.path+'/reports_pdf/brasil/risk-pt/Cases'
                 self.open_file(self.path_others)
-            except:
+            except ValueError:
                 messagebox.showerror("Error!!!", "Could not perform the operation, check the file format and try again.")
             
             self.statusbar["text"] = "Ready!"      
@@ -152,7 +165,7 @@ class Application:
 
 app = Tk()
 app.title("[COVID19] Risk Diagrams by UPC and IRRD")
-app.geometry("350x580")
+app.geometry("350x700")
 app.configure(background='white')
 Application(app)
 app.mainloop()

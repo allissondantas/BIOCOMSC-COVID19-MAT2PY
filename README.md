@@ -18,6 +18,8 @@ pip3 install numpy
 pip3 install matplotlib 
 pip3 install colormap
 pip3 install plotly
+pip3 install openpyxl
+pip3 install xlrd
 
 ```
 ### Usage 
