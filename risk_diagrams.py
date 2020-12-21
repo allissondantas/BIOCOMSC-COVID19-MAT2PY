@@ -347,8 +347,8 @@ def run_risk_diagrams(argv_1, deaths, file_others_cases, file_others_pop, radio_
                 run_animation(a_14_days, p_seven, int(lim[1]), bra_title, last_day, False)
 
 
-            plt.show()
-            break
+            #plt.show()
+            #break
 
             if brasil and pt:
                 if last_days: 
