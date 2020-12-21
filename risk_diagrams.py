@@ -276,43 +276,6 @@ def run_risk_diagrams(argv_1, deaths, file_others_cases, file_others_pop, radio_
             if brasil:
                 bra_title = region[ID] + ' - Brasil'
                 plt.title(bra_title)
-            else:
-                bra_title = region[ID]
-                plt.title(region[ID])
-            
-            rh = np.arange(0,int(lim[1]),1)
-            ar = np.linspace(0,4,400)
-            
-            RH, AR = np.meshgrid(rh, ar)
-
-            EPG = RH * AR
-
-            for i in range(len(EPG)):
-                for j in range(len(EPG[i])):
-                    if EPG[i][j] > 100:
-                        EPG[i][j] = 100
-            c = colormap.Colormap()
-            mycmap = c.cmap_linear('green(w3c)', 'yellow', 'red')
-            ax1.pcolorfast([0, int(lim[1])], [0, 4],EPG, cmap=mycmap, alpha=0.6)
-
-
-            if region[ID] == "Pernambuco" or argv_1 == 'recife':
-                brasil = True
-                pt = True
-                plt.subplots_adjust(bottom=0.2)
-                text_annotate = (
-                    "*A zona vermelha representa alto risco de infecção, enquanto a zona verde representa baixo risco.\n Valores calculados baseados na incidência diária de "+ cases_deaths +" e população. "
-                    "IRRD/PE. \n Fonte: SES-PE. Dados atualizados em "+ str(last_day) +".")
-                
-                plt.text(0, -1, text_annotate, fontsize=7, wrap=False)
-
-                text_annotate_2 = (
-                    "EPG > 100: Alto risco\n"
-                    "70 < EPG < 100: Risco moderado-alto\n"
-                    "30 < EPG < 70: Risco moderado\n"
-                    "EPG < 30: Risco baixo")
-
-                #plt.text(0, 4.1, text_annotate_2, fontsize=7, wrap=False)
                 plt.annotate(
                 ' EPG > 100: Alto', xy=(len(x) - abs(len(x) / 3.5), 3.8), color=(0,0,0), 
                 ha='left', va='center', fontsize='6', 
@@ -339,6 +302,40 @@ def run_risk_diagrams(argv_1, deaths, file_others_cases, file_others_pop, radio_
                 '  ', xy=(len(x) - abs(len(x) / 3.3), 3.3), color=(0,0,0), 
                 ha='left', va='center', fontsize='6', 
                 bbox=dict(fc=(0, 1, 0, .5), lw=0, pad=2))
+            else:
+                bra_title = region[ID]
+                plt.title(region[ID])
+            
+            rh = np.arange(0,int(lim[1]),1)
+            ar = np.linspace(0,4,400)
+            
+            RH, AR = np.meshgrid(rh, ar)
+
+            EPG = RH * AR
+
+            for i in range(len(EPG)):
+                for j in range(len(EPG[i])):
+                    if EPG[i][j] > 100:
+                        EPG[i][j] = 100
+            c = colormap.Colormap()
+            mycmap = c.cmap_linear('green(w3c)', 'yellow', 'red')
+            ax1.pcolorfast([0, int(lim[1])], [0, 4],EPG, cmap=mycmap, alpha=0.6)
+
+
+            if region[ID] == "Pernambuco" or argv_1 == 'recife':
+                bra_title = region[ID] + ' - PE'
+                plt.title(bra_title)
+                brasil = True
+                pt = True
+                plt.subplots_adjust(bottom=0.2)
+                text_annotate = (
+                    "*A zona vermelha representa alto risco de infecção, enquanto a zona verde representa baixo risco.\n Valores calculados baseados na incidência diária de "+ cases_deaths +" e população. "
+                    "IRRD/PE. \n Fonte: SES-PE. Dados atualizados em "+ str(last_day) +".")
+                
+                plt.text(0, -1, text_annotate, fontsize=7, wrap=False)
+
+              
+                
             
             ax1.set_aspect('auto')
 
