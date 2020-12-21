@@ -241,6 +241,7 @@ def run_risk_diagrams(argv_1, deaths, file_others_cases, file_others_pop, radio_
             #with PdfPages(save_path + '.pdf') as pdf:
             fig1, ax1 = plt.subplots(sharex=True)
             if last_days: 
+                ax1.plot(a_14_days,  p_seven, 'ko--', fillstyle='none', linewidth=0.5, color = (0,0,0,0.15))
                 ax1.plot(a_14_days_solo,  p_seven, 'ko--', fillstyle='none', linewidth=0.5) #For last 15 days
                 ax1.plot(a_14_days_solo[len(a_14_days_solo) - 1],  p_seven[len(p_seven) - 1], 'bo')
             else: 
@@ -303,13 +304,48 @@ def run_risk_diagrams(argv_1, deaths, file_others_cases, file_others_pop, radio_
                     "*A zona vermelha representa alto risco de infecção, enquanto a zona verde representa baixo risco.\n Valores calculados baseados na incidência diária de "+ cases_deaths +" e população. "
                     "IRRD/PE. \n Fonte: SES-PE. Dados atualizados em "+ str(last_day) +".")
                 
-                plt.text(0, -1, text_annotate, fontsize=7, wrap=True)
+                plt.text(0, -1, text_annotate, fontsize=7, wrap=False)
+
+                text_annotate_2 = (
+                    "EPG > 100: Alto risco\n"
+                    "70 < EPG < 100: Risco moderado-alto\n"
+                    "30 < EPG < 70: Risco moderado\n"
+                    "EPG < 30: Risco baixo")
+
+                #plt.text(0, 4.1, text_annotate_2, fontsize=7, wrap=False)
+                plt.annotate(
+                'EPG > 100: Alto risco', xy=(65, 3.8), color=(0,0,0), 
+                ha='left', va='center', fontsize='6', 
+                bbox=dict(fc=(0, 0, 0, 0), lw=0, pad=2))
+                plt.annotate(
+                "70 < EPG < 100: Risco moderado-alto\n"
+                "30 < EPG < 70: Risco moderado", xy=(65, 3.55), color=(0,0,0), 
+                ha='left', va='center', fontsize='6', 
+                bbox=dict(fc=(0, 0, 0, 0), lw=0, pad=2))
+                plt.annotate(
+                'EPG < 30: Risco baixo', xy=(65, 3.3), color=(0,0,0), 
+                ha='left', va='center', fontsize='6', 
+                bbox=dict(fc=(0, 0, 0, 0), lw=0, pad=2))
+
+                plt.annotate(
+                '  ', xy=(55, 3.8), color=(0,0,0), 
+                ha='left', va='center', fontsize='6', 
+                bbox=dict(fc=(1, 0, 0, .5), lw=0, pad=2))
+                plt.annotate(
+                "  \n", xy=(55, 3.55), color=(0,0,0), 
+                ha='left', va='center', fontsize='6', 
+                bbox=dict(fc=(1, 1, 0, .5), lw=0, pad=2))
+                plt.annotate(
+                '  ', xy=(55, 3.3), color=(0,0,0), 
+                ha='left', va='center', fontsize='6', 
+                bbox=dict(fc=(0, 1, 0, .5), lw=0, pad=2))
             
             ax1.set_aspect('auto')
 
 
             if(animation):
                 run_animation(a_14_days, p_seven, int(lim[1]), bra_title, last_day, False)
+
 
             #plt.show()
             #break
