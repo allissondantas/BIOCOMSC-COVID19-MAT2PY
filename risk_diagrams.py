@@ -262,13 +262,13 @@ def run_risk_diagrams(argv_1, deaths, file_others_cases, file_others_pop, radio_
                 ax1.set_xlabel('Attack rate per $10^5$ inh. (last 14 days)')
             ax1.annotate(first_day,
                             xy=(a_14_days[day13], p_seven[day13]), xycoords='data',
-                            xytext=(len(x) - abs(len(x) / 2), 3), textcoords='data',
+                            xytext=(len(x) - abs(len(x) / 1.5), 2.7), textcoords='data',
                             arrowprops=dict(arrowstyle="->",
                                             connectionstyle="arc3", linewidth=0.4),
                             )
             ax1.annotate(last_day,
                             xy=(a_14_days[len(a_14_days) - 1], p_seven[len(p_seven) - 1]), xycoords='data',
-                            xytext=(len(x) - abs(len(x) / 3), 3.5), textcoords='data',
+                            xytext=(len(x) - abs(len(x) / 2), 3), textcoords='data',
                             arrowprops=dict(arrowstyle="->",
                                             connectionstyle="arc3", linewidth=0.4),
                             )
@@ -314,29 +314,29 @@ def run_risk_diagrams(argv_1, deaths, file_others_cases, file_others_pop, radio_
 
                 #plt.text(0, 4.1, text_annotate_2, fontsize=7, wrap=False)
                 plt.annotate(
-                'EPG > 100: Alto risco', xy=(65, 3.8), color=(0,0,0), 
+                ' EPG > 100: Alto', xy=(len(x) - abs(len(x) / 3.5), 3.8), color=(0,0,0), 
                 ha='left', va='center', fontsize='6', 
                 bbox=dict(fc=(0, 0, 0, 0), lw=0, pad=2))
                 plt.annotate(
-                "70 < EPG < 100: Risco moderado-alto\n"
-                "30 < EPG < 70: Risco moderado", xy=(65, 3.55), color=(0,0,0), 
+                " 70 < EPG < 100: Moderado-alto\n"
+                " 30 < EPG < 70 : Moderado", xy=(len(x) - abs(len(x) / 3.5), 3.55), color=(0,0,0), 
                 ha='left', va='center', fontsize='6', 
                 bbox=dict(fc=(0, 0, 0, 0), lw=0, pad=2))
                 plt.annotate(
-                'EPG < 30: Risco baixo', xy=(65, 3.3), color=(0,0,0), 
+                ' EPG < 30: Baixo', xy=(len(x) - abs(len(x) / 3.5), 3.3), color=(0,0,0), 
                 ha='left', va='center', fontsize='6', 
                 bbox=dict(fc=(0, 0, 0, 0), lw=0, pad=2))
 
                 plt.annotate(
-                '  ', xy=(55, 3.8), color=(0,0,0), 
+                '  ', xy=(len(x) - abs(len(x) / 3.3), 3.8), color=(0,0,0), 
                 ha='left', va='center', fontsize='6', 
                 bbox=dict(fc=(1, 0, 0, .5), lw=0, pad=2))
                 plt.annotate(
-                "  \n", xy=(55, 3.55), color=(0,0,0), 
+                "  \n", xy=(len(x) - abs(len(x) / 3.3), 3.55), color=(0,0,0), 
                 ha='left', va='center', fontsize='6', 
                 bbox=dict(fc=(1, 1, 0, .5), lw=0, pad=2))
                 plt.annotate(
-                '  ', xy=(55, 3.3), color=(0,0,0), 
+                '  ', xy=(len(x) - abs(len(x) / 3.3), 3.3), color=(0,0,0), 
                 ha='left', va='center', fontsize='6', 
                 bbox=dict(fc=(0, 1, 0, .5), lw=0, pad=2))
             
@@ -347,8 +347,8 @@ def run_risk_diagrams(argv_1, deaths, file_others_cases, file_others_pop, radio_
                 run_animation(a_14_days, p_seven, int(lim[1]), bra_title, last_day, False)
 
 
-            #plt.show()
-            #break
+            plt.show()
+            break
 
             if brasil and pt:
                 if last_days: 
